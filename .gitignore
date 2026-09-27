@@ -1,0 +1,10 @@
+.vs/
+bin/
+obj/
+x64/
+x86/
+Debug/
+Release/
+*.ipch
+*.pdb
+*.log
