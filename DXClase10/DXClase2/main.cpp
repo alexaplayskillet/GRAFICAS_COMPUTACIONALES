@@ -20,7 +20,7 @@ const int Width = 800;
 const int Height = 600;
 
 DXRender *dxrender;
-
+ //prueba de subida hecha por alex
 //Function Prototypes//
 bool InitializeWindow(HINSTANCE hInstance,
 	int ShowWnd,
