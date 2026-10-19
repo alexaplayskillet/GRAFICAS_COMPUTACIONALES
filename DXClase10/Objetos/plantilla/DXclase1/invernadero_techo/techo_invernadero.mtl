@@ -1,0 +1,132 @@
+# Blender 5.1.1 MTL File: 'lab440.blend'
+# www.blender.org
+
+newmtl ventana
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.001
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.002
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.003
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.004
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.005
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.006
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.007
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.008
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.009
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.010
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl ventana.011
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/ventana2.jpeg
+
+newmtl vidrio
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/vidrio.png
+map_Ks C:/Users/ari_d/OneDrive/Escritorio/Graficas compu/texturas lab440/vidrio.png

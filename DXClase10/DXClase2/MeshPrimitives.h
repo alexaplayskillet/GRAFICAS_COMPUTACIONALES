@@ -948,9 +948,9 @@ public:
 
 				index = (tHeight * j) + i;
 
-				heightMap[index].pos.x = (float)i;
-				heightMap[index].pos.y = (float)(height /= 15.0f);
-				heightMap[index].pos.z = (float)j;
+				heightMap[index].pos.x = (float)i * 5.0f;
+				heightMap[index].pos.y = (float)(height / 15.0f);
+				heightMap[index].pos.z = (float)j * 5.0f;
 
 				if (max < heightMap[index].pos.y)
 					max = heightMap[index].pos.y;
@@ -1154,7 +1154,9 @@ public:
 
 		//Si no se pudo abrir el modelo regresa falso
 		if (fin.fail())
+		{
 			return false;
+		}
 
 		//Leemos hasta los ":" para leer la cantidada de vertices
 		fin.get(input);

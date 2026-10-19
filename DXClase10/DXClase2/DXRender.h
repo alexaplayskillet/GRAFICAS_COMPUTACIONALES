@@ -38,6 +38,38 @@ private:
 	MPrimitives *BoundingSphere1;
 	MPrimitives *BoundingSphere2;
 
+	//Terreno modelos Lab 440
+	MPrimitives *paredesArriba;
+	MPrimitives *marcosArriba;
+	MPrimitives *franja;	
+	MPrimitives* paredesAbajo;
+	MPrimitives* paredesAbajoPB;
+	MPrimitives* piso;
+	MPrimitives* rejasMetal;
+	MPrimitives* rejasFranja;
+	MPrimitives* rejasTierra;
+	MPrimitives* rejasTecho;
+	MPrimitives* banquetaPiso;
+	MPrimitives* banquetaPiso2;
+	MPrimitives* ventanas;
+	MPrimitives* invernaderoVentana;
+	MPrimitives* invernaderoVidrio;
+	MPrimitives* marcosMarco;
+	MPrimitives* marcosPB;
+	MPrimitives* marcosPuerta;
+	MPrimitives* estructInvernadero;
+	MPrimitives* pisoTierra;
+	MPrimitives* techoPrincipal;
+	MPrimitives* techoTierra;
+	MPrimitives* techoOrillaMarco;
+	MPrimitives* techoOrillaPB;
+	MPrimitives* puertasPuerta;
+	MPrimitives* puertasMarco;
+	MPrimitives* puertasPB;
+	MPrimitives* marcosVentanas;
+
+
+
 	Camara *camara;
 	Camara *skyCamara;
 
@@ -143,6 +175,42 @@ public:
 		
 		skydomo = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1000.0f, L"Texturas/sky2.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		terreno = new MPrimitives(d3d11Device, d3d11DevCon, 100.0f, L"Texturas/gravel2.jpg", L"Texturas/grass5.jpg", "Texturas/heightmap01.bmp", ShaderMultitextura);
+
+		// Estructura laboratorio
+	    // Paredes superiores
+		paredesArriba = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_paredes.txt",L"../Objetos/plantilla/DXclase1/Pared_Arriba/pared2.png",L"",ShaderDiffuse);
+		marcosArriba = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_marcos.txt",L"../Objetos/plantilla/DXclase1/Pared_Arriba/pared2.png",L"",ShaderDiffuse);
+		franja = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/Franja/franja.txt",L"../Objetos/plantilla/DXclase1/Franja/franja2.png",L"",ShaderDiffuse);
+		paredesAbajo = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/pared_Abajo/pared_Abajo_paredes.txt",L"../Objetos/plantilla/DXclase1/pared_Abajo/pared2.png",L"",ShaderDiffuse);
+		paredesAbajoPB = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/pared_Abajo/pared_Abajo_pb.txt",L"../Objetos/plantilla/DXclase1/pared_Abajo/padredpb.png",L"",ShaderDiffuse);
+		piso = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/piso/piso.txt",L"../Objetos/plantilla/DXclase1/piso/piso.png",L"",ShaderDiffuse);
+		rejasMetal = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/rejas/rejas_metal.txt", L"../Objetos/plantilla/DXclase1/rejas/metal2.png", L"", ShaderDiffuse);
+		rejasFranja = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/rejas/rejas_franja.txt", L"../Objetos/plantilla/DXclase1/rejas/franja2.png", L"", ShaderDiffuse);
+		rejasTierra = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/rejas/rejas_tierra.txt", L"../Objetos/plantilla/DXclase1/rejas/tierra.png", L"", ShaderDiffuse);
+		rejasTecho = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/rejas/rejas_techo.txt", L"../Objetos/plantilla/DXclase1/rejas/techo.png", L"", ShaderDiffuse);
+		banquetaPiso = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/banqueta/banqueta_piso.txt", L"../Objetos/plantilla/DXclase1/banqueta/piso.png", L"", ShaderDiffuse);
+		banquetaPiso2 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/banqueta/banqueta_piso2.txt", L"../Objetos/plantilla/DXclase1/banqueta/piso2.png", L"", ShaderDiffuse);
+		ventanas = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/ventanas/ventanas.txt", L"../Objetos/plantilla/DXclase1/ventanas/ventana2.jpeg", L"", ShaderDiffuse);
+		invernaderoVentana = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/invernadero_techo/techo_invernadero_ventana.txt", L"../Objetos/plantilla/DXclase1/invernadero_techo/ventana2.jpeg", L"", ShaderDiffuse);
+		invernaderoVidrio = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/invernadero_techo/techo_invernadero_vidrio.txt", L"../Objetos/plantilla/DXclase1/invernadero_techo/vidrio.png", L"", ShaderDiffuse);
+		marcosMarco = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/marcos/marcos_marco.txt", L"../Objetos/plantilla/DXclase1/marcos/marco.png", L"", ShaderDiffuse);
+		marcosPuerta = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/marcos/marcos_puerta.txt", L"../Objetos/plantilla/DXclase1/marcos/puerta2.png", L"", ShaderDiffuse);
+		marcosPB = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/marcos/marcos_pb.txt", L"../Objetos/plantilla/DXclase1/marcos/padredpb.png", L"", ShaderDiffuse);
+		estructInvernadero = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/estruct_invernadero/estruct_invernadero.txt", L"../Objetos/plantilla/DXclase1/estruct_invernadero/marco.png", L"", ShaderDiffuse);
+		pisoTierra = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/piso_tierra/piso_tierra.txt", L"../Objetos/plantilla/DXclase1/piso_tierra/tierra.png", L"", ShaderDiffuse);
+		techoPrincipal = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/techo/techo_techo.txt", L"../Objetos/plantilla/DXclase1/techo/techo.png", L"", ShaderDiffuse);
+		techoTierra = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/techo/techo_tierra.txt", L"../Objetos/plantilla/DXclase1/techo/tierra.png", L"", ShaderDiffuse);
+		techoOrillaMarco = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/techo_orilla/techo_orilla_marco.txt", L"../Objetos/plantilla/DXclase1/techo_orilla/marco.png", L"", ShaderDiffuse);
+		techoOrillaPB = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/techo_orilla/techo_orilla_pb.txt", L"../Objetos/plantilla/DXclase1/techo_orilla/padredpb.png", L"", ShaderDiffuse);
+		puertasPuerta = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/puertas/puertas_puerta.txt", L"../Objetos/plantilla/DXclase1/puertas/puerta2.png", L"", ShaderDiffuse);
+		puertasMarco = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/puertas/puertas_marco.txt", L"../Objetos/plantilla/DXclase1/puertas/marco.png", L"", ShaderDiffuse);
+		puertasPB = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/puertas/puertas_pb.txt", L"../Objetos/plantilla/DXclase1/puertas/padredpb.png", L"", ShaderDiffuse);
+		marcosVentanas = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/marco_ventana/marco_ventanas.txt", L"../Objetos/plantilla/DXclase1/marco_ventana/marco.png", L"", ShaderDiffuse);
+
+
+
+
+
 
 		BoundingSphere1 = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		BoundingSphere2 = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
@@ -281,6 +349,9 @@ public:
 		D3DXVECTOR3 Position = D3DXVECTOR3(50, 2.0f, 40.0f);
 		D3DXVECTOR3 Target = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		D3DXVECTOR3 Up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+
+        
+		
 		camara = new Camara(Position,Target,Up, Width, Height);
 		skyCamara = new Camara(Position,Target,Up, Width, Height);
 		//esta es la gui
@@ -320,7 +391,80 @@ public:
 		cono->UpdateScene(rotMatY * westMat* MatAcomodo);
 		
 		billboard->UpdateScene(westMat * northMat* MatAcomodo);
-		
+		//Laboratorio estructura
+
+	// Laboratorio completo
+	// Rotacion de 180 grados en el eje Y
+
+		D3DXMATRIX moverOrigen, rotacionLab, regresarCentro, matrizLaboratorio;
+
+		// Centro de rotacion (ajustable)
+		float centroX = 0.0f;
+		float centroZ = 0.0f;
+
+		D3DXMatrixTranslation(&moverOrigen, -centroX, 0.0f, -centroZ);
+		D3DXMatrixRotationY(&rotacionLab, D3DXToRadian(180.0f));
+		D3DXMatrixTranslation(&regresarCentro, centroX, 0.0f, centroZ);
+
+		matrizLaboratorio = moverOrigen * rotacionLab * regresarCentro;
+
+		// Paredes superiores
+		paredesArriba->UpdateScene(matrizLaboratorio);
+		marcosArriba->UpdateScene(matrizLaboratorio);
+
+		// Franja
+		franja->UpdateScene(matrizLaboratorio);
+
+		// Paredes inferiores
+		paredesAbajo->UpdateScene(matrizLaboratorio);
+		paredesAbajoPB->UpdateScene(matrizLaboratorio);
+
+		// Piso
+		piso->UpdateScene(matrizLaboratorio);
+
+		// Rejas
+		rejasMetal->UpdateScene(matrizLaboratorio);
+		rejasFranja->UpdateScene(matrizLaboratorio);
+		rejasTierra->UpdateScene(matrizLaboratorio);
+		rejasTecho->UpdateScene(matrizLaboratorio);
+
+		// Banqueta
+		banquetaPiso->UpdateScene(matrizLaboratorio);
+		banquetaPiso2->UpdateScene(matrizLaboratorio);
+
+		// Ventanas
+		ventanas->UpdateScene(matrizLaboratorio);
+
+		// Techo del invernadero
+		invernaderoVentana->UpdateScene(matrizLaboratorio);
+		invernaderoVidrio->UpdateScene(matrizLaboratorio);
+
+		// Marcos
+		marcosMarco->UpdateScene(matrizLaboratorio);
+		marcosPB->UpdateScene(matrizLaboratorio);
+		marcosPuerta->UpdateScene(matrizLaboratorio);
+		marcosVentanas->UpdateScene(matrizLaboratorio);
+
+		// Estructura del invernadero
+		estructInvernadero->UpdateScene(matrizLaboratorio);
+
+		// Piso de tierra del laboratorio
+		pisoTierra->UpdateScene(matrizLaboratorio);
+
+		// Techo principal
+		techoPrincipal->UpdateScene(matrizLaboratorio);
+		techoTierra->UpdateScene(matrizLaboratorio);
+
+		// Orillas del techo
+		techoOrillaMarco->UpdateScene(matrizLaboratorio);
+		techoOrillaPB->UpdateScene(matrizLaboratorio);
+
+		// Puertas
+		puertasPuerta->UpdateScene(matrizLaboratorio);
+		puertasMarco->UpdateScene(matrizLaboratorio);
+		puertasPB->UpdateScene(matrizLaboratorio);
+
+
 
 		D3DXMATRIX skyRotMat, terrMat;
 		D3DXMatrixRotationX(&skyRotMat, D3DXToRadian(-90));
@@ -331,7 +475,9 @@ public:
 		D3DXMatrixIdentity(&terrMat);
 		terreno->UpdateScene(terrMat);
 
-		camara->Position.y = terreno->getTerrainCollision(camara->getXZ()) +3;
+
+		//temporal prueba
+		//camara->Position.y = terreno->getTerrainCollision(camara->getXZ()) +3;
 
 		BoundingSphere1->UpdateScene(Bounding1 * MatAcomodo * BoundinMatTranslation);
 		BoundingSphere2->UpdateScene(Bounding2 * MatAcomodo);
@@ -366,7 +512,35 @@ public:
 		cono->DrawScene(camara);
 		billboard->DrawScene(camara);
 
-		
+		//Lab estructura
+		paredesArriba->DrawScene(camara);
+		marcosArriba->DrawScene(camara);
+		franja->DrawScene(camara);
+		paredesAbajo->DrawScene(camara);
+		paredesAbajoPB->DrawScene(camara);
+		piso->DrawScene(camara);
+		rejasMetal->DrawScene(camara);
+		rejasFranja->DrawScene(camara);
+		rejasTierra->DrawScene(camara);
+		rejasTecho->DrawScene(camara);
+		banquetaPiso->DrawScene(camara);
+		banquetaPiso2->DrawScene(camara);
+		ventanas->DrawScene(camara);
+		invernaderoVentana->DrawScene(camara);
+		invernaderoVidrio->DrawScene(camara);
+		marcosMarco->DrawScene(camara);
+		marcosPB->DrawScene(camara);
+		marcosPuerta->DrawScene(camara);
+		estructInvernadero->DrawScene(camara);
+		pisoTierra->DrawScene(camara);
+		techoPrincipal->DrawScene(camara);
+		techoTierra->DrawScene(camara);
+		techoOrillaMarco->DrawScene(camara);
+		techoOrillaPB->DrawScene(camara);
+		puertasPuerta->DrawScene(camara);
+		puertasMarco->DrawScene(camara);
+		puertasPB->DrawScene(camara);
+		marcosVentanas->DrawScene(camara);
 
 		terreno->DrawScene(camara);
 		skydomo->DrawScene(skyCamara);
