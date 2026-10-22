@@ -948,9 +948,9 @@ public:
 
 				index = (tHeight * j) + i;
 
-				heightMap[index].pos.x = (float)i * 5.0f;
-				heightMap[index].pos.y = (float)(height / 15.0f);
-				heightMap[index].pos.z = (float)j * 5.0f;
+				heightMap[index].pos.x = (float)i * 1.5f;
+				heightMap[index].pos.y = (float)(height / 25.0f);
+				heightMap[index].pos.z = (float)j * 1.5f;
 
 				if (max < heightMap[index].pos.y)
 					max = heightMap[index].pos.y;
@@ -1356,7 +1356,7 @@ public:
 		d3d11DevCon->DrawIndexed(numIndex, 0, 0);
 	}
 
-	void DrawBitmap(Camara *camara){
+	void DrawBitmap(Camara* camara, float posX = 0.5f, float posY = -0.5f, float escalaX = 0.5f, float escalaY = 0.5f) {
 		
 		// Dibujar la GUI
 	
@@ -1377,8 +1377,8 @@ public:
 		// Seteamos la matriz WVP a una escala y traslacion dada apara acomodarla en pantalla
 
 		D3DXMATRIX ScaleM, TranslationM;
-		D3DXMatrixScaling(&ScaleM, .5, .5, 0);
-		D3DXMatrixTranslation(&TranslationM, .5, -.5, .8);
+		D3DXMatrixScaling(&ScaleM, escalaX, escalaY, 1);
+		D3DXMatrixTranslation(&TranslationM, posX, posY, 0.0f);
 
 		D3DXMATRIX WorldViewProjection = ScaleM * TranslationM;
 		

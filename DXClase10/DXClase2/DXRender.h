@@ -38,6 +38,10 @@ private:
 	MPrimitives *BoundingSphere1;
 	MPrimitives *BoundingSphere2;
 
+	//HUD
+	MPrimitives* hudVida;
+	MPrimitives* hudMapa;
+
 	//Terreno modelos Lab 440
 	MPrimitives *paredesArriba;
 	MPrimitives *marcosArriba;
@@ -174,7 +178,7 @@ public:
 		billboard = new MPrimitives(d3d11Device, d3d11DevCon, 2.0f, 2.0f, L"Texturas/ave.png");
 		
 		skydomo = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1000.0f, L"Texturas/sky2.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
-		terreno = new MPrimitives(d3d11Device, d3d11DevCon, 100.0f, L"Texturas/gravel2.jpg", L"Texturas/grass5.jpg", "Texturas/heightmap01.bmp", ShaderMultitextura);
+		terreno = new MPrimitives(d3d11Device, d3d11DevCon, 100.0f, L"Texturas/leaves.jpg", L"Texturas/tierra.png", "Texturas/height3.bmp", ShaderMultitextura);
 
 		// Estructura laboratorio
 	    // Paredes superiores
@@ -346,7 +350,7 @@ public:
 		d3d11DevCon->RSSetViewports(1, &viewport);
 
 		//Create the camera
-		D3DXVECTOR3 Position = D3DXVECTOR3(50, 2.0f, 40.0f);
+		D3DXVECTOR3 Position = D3DXVECTOR3(155.25f, 5.0f, 81.25f);
 		D3DXVECTOR3 Target = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		D3DXVECTOR3 Up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
@@ -355,7 +359,8 @@ public:
 		camara = new Camara(Position,Target,Up, Width, Height);
 		skyCamara = new Camara(Position,Target,Up, Width, Height);
 		//esta es la gui
-		Bitmap = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Health.png", camara);
+		hudVida = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Health.png", camara);
+		hudMapa = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/mapa.png", camara);
 
 		return true;
 	}
@@ -396,17 +401,16 @@ public:
 	// Laboratorio completo
 	// Rotacion de 180 grados en el eje Y
 
-		D3DXMATRIX moverOrigen, rotacionLab, regresarCentro, matrizLaboratorio;
+		D3DXMATRIX alOrigen, rotacionLab, posicionLab, matrizLaboratorio;
 
-		// Centro de rotacion (ajustable)
-		float centroX = 0.0f;
-		float centroZ = 0.0f;
-
-		D3DXMatrixTranslation(&moverOrigen, -centroX, 0.0f, -centroZ);
+		// lleva el centro del edificio al origen x=78, z=-94
+		D3DXMatrixTranslation(&alOrigen, -78.0f, 0.0f, 94.0f);
+		// gira sobre su propio centro
 		D3DXMatrixRotationY(&rotacionLab, D3DXToRadian(180.0f));
-		D3DXMatrixTranslation(&regresarCentro, centroX, 0.0f, centroZ);
+		// ponerlo en donde quiera (aqui en centro)
+		D3DXMatrixTranslation(&posicionLab, 191.25f, 1.0f, 191.25f);
 
-		matrizLaboratorio = moverOrigen * rotacionLab * regresarCentro;
+		matrizLaboratorio = alOrigen * rotacionLab * posicionLab;
 
 		// Paredes superiores
 		paredesArriba->UpdateScene(matrizLaboratorio);
@@ -548,7 +552,9 @@ public:
 		BoundingSphere1->DrawScene(camara);
 		BoundingSphere2->DrawScene(camara);
 
-		Bitmap->DrawBitmap(camara);
+		// gui, camra posx popsy ancho alto
+		hudVida->DrawBitmap(camara, -0.90f, 0.85f, 0.30f, 0.30f);  // arriba a la izquierda
+		hudMapa->DrawBitmap(camara, 0.80f, -0.70f, 0.30f, 0.30f);  // abajo a la derecha
 
 
 		//Present the backbuffer to the screen
