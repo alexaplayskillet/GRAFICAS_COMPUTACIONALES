@@ -1,0 +1,146 @@
+# Blender 5.1.1 MTL File: 'lab440.blend'
+# www.blender.org
+
+newmtl cables
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/cables_BaseColor.png
+map_Ns C:/cables_Roughness.png
+map_refl C:/cables_Metallic.png
+map_d C:/cables_Alpha.png
+map_Bump -bm 1.000000 C:/cables_Normal.png
+
+newmtl cablesold
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/cables_old_BaseColor.png
+map_Ns C:/cables_old_Roughness.png
+map_refl C:/cables_old_Metallic.png
+map_d C:/cables_old_Alpha.png
+map_Bump -bm 1.000000 C:/cables_old_Normal.png
+
+newmtl desk
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/desk_BaseColor.png
+map_Ns C:/desk_Roughness.png
+map_refl C:/desk_Metallic.png
+map_d C:/desk_Alpha.png
+map_Bump -bm 1.000000 C:/desk_Normal.png
+
+newmtl deskold
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/desk_old_BaseColor.png
+map_Ns C:/desk_old_Roughness.png
+map_refl C:/desk_old_Metallic.png
+map_d C:/desk_old_Alpha.png
+map_Bump -bm 1.000000 C:/desk_old_Normal.png
+
+newmtl grid
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/grid_BaseColor.png
+map_Ns C:/grid_Roughness.png
+map_refl C:/grid_Metallic.png
+map_d C:/grid_Alpha.png
+map_Bump -bm 1.000000 C:/grid_Normal.png
+
+newmtl gridoldold
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/grid_old_BaseColor.png
+map_Ns C:/grid_old_Roughness.png
+map_refl C:/grid_old_Metallic.png
+map_d C:/grid_old_Alpha.png
+map_Bump -bm 1.000000 C:/grid_old_Normal.png
+
+newmtl keyboardold
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/keyboard_old_BaseColor.png
+map_Ns C:/keyboard_old_Roughness.png
+map_refl C:/keyboard_old_Metallic.png
+map_d C:/keyboard_old_Alpha.png
+map_Bump -bm 1.000000 C:/keyboard_old_Normal.png
+
+newmtl keybroard
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/keybroard_BaseColor.png
+map_Ns C:/keybroard_Roughness.png
+map_refl C:/keybroard_Metallic.png
+map_d C:/keybroard_Alpha.png
+map_Bump -bm 1.000000 C:/keybroard_Normal.png
+
+newmtl screen
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/screen_BaseColor.png
+map_Ns C:/screen_Roughness.png
+map_refl C:/screen_Metallic.png
+map_d C:/screen_Alpha.png
+map_Bump -bm 1.000000 C:/screen_Normal.png
+
+newmtl screenold
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/screen_old_BaseColor.png
+map_Ns C:/screen_old_Roughness.png
+map_refl C:/screen_old_Metallic.png
+map_d C:/screen_old_Alpha.png
+map_Bump -bm 1.000000 C:/screen_old_Normal.png
+
+newmtl soloscreen
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/soloscreen_BaseColor.png
+map_Ns C:/soloscreen_Roughness.png
+map_refl C:/soloscreen_Metallic.png
+map_d C:/soloscreen_Alpha.png
+map_Bump -bm 1.000000 C:/soloscreen_Normal.png
+
+newmtl soloscreenold
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/soloscreen_old_BaseColor.png
+map_Ns C:/soloscreen_old_Roughness.png
+map_refl C:/soloscreen_old_Metallic.png
+map_d C:/soloscreen_old_Alpha.png
+map_Bump -bm 1.000000 C:/soloscreen_old_Normal.png

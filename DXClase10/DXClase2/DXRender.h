@@ -26,26 +26,37 @@ private:
 	D3DXMATRIX Projection;
 
 
-	MPrimitives *cubo;
-	MPrimitives *esfera;
-	MPrimitives *toroide;
-	MPrimitives *cono;
-	MPrimitives *cilindro;
-	MPrimitives *billboard;
-	MPrimitives *skydomo;
-	MPrimitives *terreno;
-	MPrimitives *Bitmap;
-	MPrimitives *BoundingSphere1;
-	MPrimitives *BoundingSphere2;
+	MPrimitives* cubo;
+	MPrimitives* esfera;
+	MPrimitives* toroide;
+	MPrimitives* cono;
+	MPrimitives* cilindro;
+	MPrimitives* billboard;
+	MPrimitives* skydomo;
+	MPrimitives* terreno;
+	MPrimitives* Bitmap;
+	MPrimitives* BoundingSphere1;
+	MPrimitives* BoundingSphere2;
 
 	//HUD
 	MPrimitives* hudVida;
 	MPrimitives* hudMapa;
 
 	//Terreno modelos Lab 440
-	MPrimitives *paredesArriba;
-	MPrimitives *marcosArriba;
-	MPrimitives *franja;	
+	MPrimitives* paredesArriba;
+	MPrimitives* marcosArriba;
+	MPrimitives* paredesArribaVentanas;
+	MPrimitives* letreroLet1;
+	MPrimitives* letreroLet3;
+	MPrimitives* letreroLet4;
+	MPrimitives* letreroLet5;
+	MPrimitives* letreroLet6;
+	MPrimitives* letreroLet7;
+	MPrimitives* letreroLet8;
+	MPrimitives* letreroLet9;
+	MPrimitives* letreroLet10;
+	MPrimitives* letreroLet11;
+	MPrimitives* franja;
 	MPrimitives* paredesAbajo;
 	MPrimitives* paredesAbajoPB;
 	MPrimitives* piso;
@@ -71,17 +82,59 @@ private:
 	MPrimitives* puertasMarco;
 	MPrimitives* puertasPB;
 	MPrimitives* marcosVentanas;
+	MPrimitives* celdaMetal;
+	MPrimitives* celdaVidrio;
+	MPrimitives* celdaLuces;
+	// Partes de los paneles
+	MPrimitives* panelMetal;
+	MPrimitives* panelPared;
+	MPrimitives* panelPantalla;
+
+	// Botones de diferentes colores
+	MPrimitives* panelBotonRojo;
+	MPrimitives* panelBotonVerde;
+	MPrimitives* panelBotonAzul;
+
+	// Posiciones de los tres paneles
+	D3DXMATRIX matrizPanel1;
+	D3DXMATRIX matrizPanel2;
+	D3DXMATRIX matrizPanel3;
+
+	MPrimitives* escritorioDesk;
+	MPrimitives* escritorioDeskOld;
+	MPrimitives* escritorioKeyboardOld;
+	MPrimitives* escritorioKeybroard;
+	MPrimitives* escritorioGrid;
+	MPrimitives* escritorioGridOld;
+	MPrimitives* escritorioCables;
+	MPrimitives* escritorioCablesOld;
+	MPrimitives* escritorioScreen;
+	MPrimitives* escritorioScreenOld;
+	MPrimitives* escritorioSoloScreen;
+	MPrimitives* escritorioSoloScreenOld;
+
+	D3DXMATRIX matrizEscritorio;
+
+	MPrimitives* compus;
+	D3DXMATRIX matrizCompus;
 
 
 
-	Camara *camara;
-	Camara *skyCamara;
+
+
+	Camara* camara;
+	Camara* skyCamara;
 
 	float rotPerFrame;
 	float sphereSpeed;
 	D3DXVECTOR2 BoundingSphereTranslation;
 	D3DXVECTOR2 DummyBoundyEvents;
 	D3DXVECTOR2 LastBoundingPosition;
+	// Matrices para las tres celdas criogenicas
+	D3DXMATRIX matrizCelda1;
+	D3DXMATRIX matrizCelda2;
+	D3DXMATRIX matrizCelda3;
+
 
 public:
 	DXRender()
@@ -151,24 +204,24 @@ public:
 		D3D11_TEXTURE2D_DESC depthStencilDesc;
 		ID3D11Texture2D* depthStencilBuffer;
 
-		depthStencilDesc.Width     = Width;
-		depthStencilDesc.Height    = Height;
+		depthStencilDesc.Width = Width;
+		depthStencilDesc.Height = Height;
 		depthStencilDesc.MipLevels = 1;
 		depthStencilDesc.ArraySize = 1;
-		depthStencilDesc.Format    = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		depthStencilDesc.SampleDesc.Count   = 1;
+		depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		depthStencilDesc.SampleDesc.Count = 1;
 		depthStencilDesc.SampleDesc.Quality = 0;
-		depthStencilDesc.Usage          = D3D11_USAGE_DEFAULT;
-		depthStencilDesc.BindFlags      = D3D11_BIND_DEPTH_STENCIL;
-		depthStencilDesc.CPUAccessFlags = 0; 
-		depthStencilDesc.MiscFlags      = 0;
+		depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+		depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		depthStencilDesc.CPUAccessFlags = 0;
+		depthStencilDesc.MiscFlags = 0;
 
 		//Create the Depth/Stencil View
 		d3d11Device->CreateTexture2D(&depthStencilDesc, NULL, &depthStencilBuffer);
 		d3d11Device->CreateDepthStencilView(depthStencilBuffer, NULL, &depthStencilView);
 
 		//Set our Render Target
-		d3d11DevCon->OMSetRenderTargets( 1, &renderTargetView, depthStencilView );
+		d3d11DevCon->OMSetRenderTargets(1, &renderTargetView, depthStencilView);
 
 		cubo = new MPrimitives(d3d11Device, d3d11DevCon, 2.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		esfera = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
@@ -176,18 +229,32 @@ public:
 		cilindro = new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 1.0f, 2.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		cono = new MPrimitives(d3d11Device, d3d11DevCon, 16, 0.0f, 1.0f, 2.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		billboard = new MPrimitives(d3d11Device, d3d11DevCon, 2.0f, 2.0f, L"Texturas/ave.png");
-		
+
 		skydomo = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1000.0f, L"Texturas/sky2.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		terreno = new MPrimitives(d3d11Device, d3d11DevCon, 100.0f, L"Texturas/leaves.jpg", L"Texturas/tierra.png", "Texturas/height3.bmp", ShaderMultitextura);
 
 		// Estructura laboratorio
-	    // Paredes superiores
-		paredesArriba = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_paredes.txt",L"../Objetos/plantilla/DXclase1/Pared_Arriba/pared2.png",L"",ShaderDiffuse);
-		marcosArriba = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_marcos.txt",L"../Objetos/plantilla/DXclase1/Pared_Arriba/pared2.png",L"",ShaderDiffuse);
-		franja = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/Franja/franja.txt",L"../Objetos/plantilla/DXclase1/Franja/franja2.png",L"",ShaderDiffuse);
-		paredesAbajo = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/pared_Abajo/pared_Abajo_paredes.txt",L"../Objetos/plantilla/DXclase1/pared_Abajo/pared2.png",L"",ShaderDiffuse);
-		paredesAbajoPB = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/pared_Abajo/pared_Abajo_pb.txt",L"../Objetos/plantilla/DXclase1/pared_Abajo/padredpb.png",L"",ShaderDiffuse);
-		piso = new MPrimitives(d3d11Device,d3d11DevCon,(char*)"../Objetos/plantilla/DXclase1/piso/piso.txt",L"../Objetos/plantilla/DXclase1/piso/piso.png",L"",ShaderDiffuse);
+		// PAREDES SUPERIORES ACTUALIZADAS
+		paredesArriba = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_paredes.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/pared2.png", L"", ShaderDiffuse);
+		marcosArriba = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_marcos.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/marco.png", L"", ShaderDiffuse);
+		paredesArribaVentanas = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_ventanas.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/ventana2.jpeg", L"", ShaderDiffuse);
+
+		// LETREROS NUEVOS
+		letreroLet1 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let1.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let1.png", L"", ShaderDiffuse);
+		letreroLet3 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let3_.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let3}.png", L"", ShaderDiffuse);
+		letreroLet4 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let4.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let4.png", L"", ShaderDiffuse);
+		letreroLet5 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let5.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let5.png", L"", ShaderDiffuse);
+		letreroLet6 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let6.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let6.png", L"", ShaderDiffuse);
+		letreroLet7 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let7.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let7.png", L"", ShaderDiffuse);
+		letreroLet8 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let8.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let8.png", L"", ShaderDiffuse);
+		letreroLet9 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let9.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let9.png", L"", ShaderDiffuse);
+		letreroLet10 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let10.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let10.png", L"", ShaderDiffuse);
+		letreroLet11 = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Pared_Arriba/paredes_Arriba_let11.txt", L"../Objetos/plantilla/DXclase1/Pared_Arriba/let11.png", L"", ShaderDiffuse);
+
+		franja = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/Franja/franja.txt", L"../Objetos/plantilla/DXclase1/Franja/franja2.png", L"", ShaderDiffuse);
+		paredesAbajo = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/pared_Abajo/pared_Abajo_paredes.txt", L"../Objetos/plantilla/DXclase1/pared_Abajo/pared2.png", L"", ShaderDiffuse);
+		paredesAbajoPB = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/pared_Abajo/pared_Abajo_pb.txt", L"../Objetos/plantilla/DXclase1/pared_Abajo/padredpb.png", L"", ShaderDiffuse);
+		piso = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/piso/piso.txt", L"../Objetos/plantilla/DXclase1/piso/piso.png", L"", ShaderDiffuse);
 		rejasMetal = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/rejas/rejas_metal.txt", L"../Objetos/plantilla/DXclase1/rejas/metal2.png", L"", ShaderDiffuse);
 		rejasFranja = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/rejas/rejas_franja.txt", L"../Objetos/plantilla/DXclase1/rejas/franja2.png", L"", ShaderDiffuse);
 		rejasTierra = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/rejas/rejas_tierra.txt", L"../Objetos/plantilla/DXclase1/rejas/tierra.png", L"", ShaderDiffuse);
@@ -210,6 +277,30 @@ public:
 		puertasMarco = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/puertas/puertas_marco.txt", L"../Objetos/plantilla/DXclase1/puertas/marco.png", L"", ShaderDiffuse);
 		puertasPB = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/puertas/puertas_pb.txt", L"../Objetos/plantilla/DXclase1/puertas/padredpb.png", L"", ShaderDiffuse);
 		marcosVentanas = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/marco_ventana/marco_ventanas.txt", L"../Objetos/plantilla/DXclase1/marco_ventana/marco.png", L"", ShaderDiffuse);
+		celdaMetal = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/celdas/celda_metal.txt", L"../Objetos/plantilla/DXclase1/celdas/metal.png", L"", ShaderDiffuse);
+		celdaVidrio = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/celdas/celda_vidrio.txt", L"../Objetos/plantilla/DXclase1/celdas/vidrio.png", L"", ShaderDiffuse);
+		celdaLuces = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/celdas/celda_luces.txt", L"../Objetos/plantilla/DXclase1/celdas/luz.png", L"", ShaderDiffuse);
+		panelMetal = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/paneles/panel_metal.txt", L"../Objetos/plantilla/DXclase1/paneles/metal.png", L"", ShaderDiffuse);
+		panelPared = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/paneles/panel_pared.txt", L"../Objetos/plantilla/DXclase1/paneles/pared2.png", L"", ShaderDiffuse);
+		panelPantalla = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/paneles/panel_pantalla.txt", L"../Objetos/plantilla/DXclase1/paneles/pantalla.png", L"", ShaderDiffuse);
+		panelBotonRojo = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/paneles/panel_boton.txt", L"../Objetos/plantilla/DXclase1/paneles/rojo.jpg", L"", ShaderDiffuse);
+		panelBotonVerde = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/paneles/panel_boton.txt", L"../Objetos/plantilla/DXclase1/paneles/verde.jpg", L"", ShaderDiffuse);
+		panelBotonAzul = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/paneles/panel_boton.txt", L"../Objetos/plantilla/DXclase1/paneles/azul.jpg", L"", ShaderDiffuse);
+		escritorioDesk = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_desk.txt", L"../Objetos/plantilla/DXclase1/escritorio/desk_BaseColor.png", L"", ShaderDiffuse);
+		escritorioDeskOld = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_deskold.txt", L"../Objetos/plantilla/DXclase1/escritorio/desk_old_BaseColor.png", L"", ShaderDiffuse);
+		escritorioKeyboardOld = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_keyboardold.txt", L"../Objetos/plantilla/DXclase1/escritorio/keyboard_old_BaseColor.png", L"", ShaderDiffuse);
+		escritorioKeybroard = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_keybroard.txt", L"../Objetos/plantilla/DXclase1/escritorio/keybroard_BaseColor.png", L"", ShaderDiffuse);
+		escritorioGrid = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_grid.txt", L"../Objetos/plantilla/DXclase1/escritorio/grid_BaseColor.png", L"", ShaderDiffuse);
+		escritorioGridOld = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_gridoldold.txt", L"../Objetos/plantilla/DXclase1/escritorio/grid_old_BaseColor.png", L"", ShaderDiffuse);
+		escritorioCables = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_cables.txt", L"../Objetos/plantilla/DXclase1/escritorio/cables_BaseColor.png", L"", ShaderDiffuse);
+		escritorioCablesOld = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_cablesold.txt", L"../Objetos/plantilla/DXclase1/escritorio/cables_old_BaseColor.png", L"", ShaderDiffuse);
+		escritorioScreen = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_screen.txt", L"../Objetos/plantilla/DXclase1/escritorio/screen_BaseColor.png", L"", ShaderDiffuse);
+		escritorioScreenOld = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_screenold.txt", L"../Objetos/plantilla/DXclase1/escritorio/screen_old_BaseColor.png", L"", ShaderDiffuse);
+		escritorioSoloScreen = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_soloscreen.txt", L"../Objetos/plantilla/DXclase1/escritorio/soloscreen_BaseColor.png", L"", ShaderDiffuse);
+		escritorioSoloScreenOld = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/escritorio/escritorio_soloscreenold.txt", L"../Objetos/plantilla/DXclase1/escritorio/soloscreen_old_BaseColor.png", L"", ShaderDiffuse);
+		compus = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/computadoras/compus_Trim_sheet.txt", L"../Objetos/plantilla/DXclase1/computadoras/Trim_sheet_BaseColor.png", L"", ShaderDiffuse);
+
+
 
 
 
@@ -219,7 +310,7 @@ public:
 		BoundingSphere1 = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		BoundingSphere2 = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		BoundingSphereTranslation = D3DXVECTOR2(0, 0);
-		
+
 		return true;
 	}
 
@@ -229,7 +320,7 @@ public:
 			DIRECTINPUT_VERSION,
 			IID_IDirectInput8,
 			(void**)&DirectInput,
-			NULL); 
+			NULL);
 
 		DirectInput->CreateDevice(GUID_SysKeyboard,
 			&DIKeyboard,
@@ -259,7 +350,7 @@ public:
 
 		DIMouse->GetDeviceState(sizeof(DIMOUSESTATE), &mouseCurrState);
 
-		DIKeyboard->GetDeviceState(sizeof(keyboardState),(LPVOID)&keyboardState);
+		DIKeyboard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
 		float speed = 0.05f;
 
@@ -269,21 +360,21 @@ public:
 		float camYaw = 0;
 		float camPitch = 0;
 
-		
 
-		if(keyboardState[DIK_A])
+
+		if (keyboardState[DIK_A])
 		{
 			moveLeftRight -= speed;
 		}
-		if(keyboardState[DIK_D])
+		if (keyboardState[DIK_D])
 		{
 			moveLeftRight += speed;
 		}
-		if(keyboardState[DIK_W])
+		if (keyboardState[DIK_W])
 		{
 			moveBackForward += speed;
 		}
-		if(keyboardState[DIK_S])
+		if (keyboardState[DIK_S])
 		{
 			moveBackForward -= speed;
 		}
@@ -304,7 +395,7 @@ public:
 			DummyBoundyEvents.y = -.01f;
 		}
 
-		if((mouseCurrState.lX != mouseLastState.lX) || (mouseCurrState.lY != mouseLastState.lY))
+		if ((mouseCurrState.lX != mouseLastState.lX) || (mouseCurrState.lY != mouseLastState.lY))
 		{
 			float smoothness = 0.001f;
 			camYaw = mouseCurrState.lX * smoothness;
@@ -314,7 +405,7 @@ public:
 			mouseLastState = mouseCurrState;
 		}
 
-		camara->UpdateCamera(moveBackForward, moveLeftRight, camYaw, camPitch); 
+		camara->UpdateCamera(moveBackForward, moveLeftRight, camYaw, camPitch);
 		skyCamara->setSkyCamara(camara);
 	}
 
@@ -354,10 +445,10 @@ public:
 		D3DXVECTOR3 Target = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		D3DXVECTOR3 Up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
-        
-		
-		camara = new Camara(Position,Target,Up, Width, Height);
-		skyCamara = new Camara(Position,Target,Up, Width, Height);
+
+
+		camara = new Camara(Position, Target, Up, Width, Height);
+		skyCamara = new Camara(Position, Target, Up, Width, Height);
 		//esta es la gui
 		hudVida = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Health.png", camara);
 		hudMapa = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/mapa.png", camara);
@@ -367,14 +458,14 @@ public:
 
 	void UpdateScene()
 	{
-		
+
 		LastBoundingPosition = BoundingSphereTranslation;
 		BoundingSphereTranslation += DummyBoundyEvents;
 
-	
+
 		rotPerFrame += 0.1f;
 
-		D3DXMATRIX rotMatY, northMat, westMat, eastMat, southMat, scale, rotMatX,MatAcomodo;
+		D3DXMATRIX rotMatY, northMat, westMat, eastMat, southMat, scale, rotMatX, MatAcomodo;
 
 		D3DXMATRIX Bounding1, Bounding2, BoundinMatTranslation;
 
@@ -391,11 +482,11 @@ public:
 
 		cubo->UpdateScene(rotMatY * MatAcomodo);
 		esfera->UpdateScene(rotMatY * northMat * MatAcomodo);
-		toroide->UpdateScene(rotMatY * eastMat* MatAcomodo);
-		cilindro->UpdateScene(rotMatY * eastMat * northMat* MatAcomodo);
-		cono->UpdateScene(rotMatY * westMat* MatAcomodo);
-		
-		billboard->UpdateScene(westMat * northMat* MatAcomodo);
+		toroide->UpdateScene(rotMatY * eastMat * MatAcomodo);
+		cilindro->UpdateScene(rotMatY * eastMat * northMat * MatAcomodo);
+		cono->UpdateScene(rotMatY * westMat * MatAcomodo);
+
+		billboard->UpdateScene(westMat * northMat * MatAcomodo);
 		//Laboratorio estructura
 
 	// Laboratorio completo
@@ -412,9 +503,21 @@ public:
 
 		matrizLaboratorio = alOrigen * rotacionLab * posicionLab;
 
-		// Paredes superiores
+		// PAREDES SUPERIORES Y LETREROS
 		paredesArriba->UpdateScene(matrizLaboratorio);
 		marcosArriba->UpdateScene(matrizLaboratorio);
+		paredesArribaVentanas->UpdateScene(matrizLaboratorio);
+
+		letreroLet1->UpdateScene(matrizLaboratorio);
+		letreroLet3->UpdateScene(matrizLaboratorio);
+		letreroLet4->UpdateScene(matrizLaboratorio);
+		letreroLet5->UpdateScene(matrizLaboratorio);
+		letreroLet6->UpdateScene(matrizLaboratorio);
+		letreroLet7->UpdateScene(matrizLaboratorio);
+		letreroLet8->UpdateScene(matrizLaboratorio);
+		letreroLet9->UpdateScene(matrizLaboratorio);
+		letreroLet10->UpdateScene(matrizLaboratorio);
+		letreroLet11->UpdateScene(matrizLaboratorio);
 
 		// Franja
 		franja->UpdateScene(matrizLaboratorio);
@@ -468,20 +571,140 @@ public:
 		puertasMarco->UpdateScene(matrizLaboratorio);
 		puertasPB->UpdateScene(matrizLaboratorio);
 
+		// celdas criogenicas
+		D3DXMATRIX posicionCelda1, posicionCelda2, posicionCelda3;
+		float celdaX = 0.0f;
+		float celdaY = 0.00f;
+		float celdaZ = 0.0f;
+		float separacion = 9.0f;
+
+		// CELDA 1 
+		D3DXMatrixTranslation(&posicionCelda1,
+			celdaX, celdaY, celdaZ);
+		matrizCelda1 = posicionCelda1 * matrizLaboratorio;
+		// CELDA 2 
+		D3DXMatrixTranslation(&posicionCelda2,
+			celdaX, celdaY, celdaZ - separacion);
+		matrizCelda2 = posicionCelda2 * matrizLaboratorio;
+		// CELDA 3
+		D3DXMatrixTranslation(&posicionCelda3,
+			celdaX, celdaY, celdaZ - separacion * 2.0f);
+		matrizCelda3 = posicionCelda3 * matrizLaboratorio;
+
+		// PANELES DE CONTROL
+		D3DXMATRIX posicionPanel1, posicionPanel2, posicionPanel3;
+		D3DXMATRIX rotacionPanel, moverOrigen, regresarOrigen;
+
+		// Posicion de los paneles
+		float panelX = -20.0f;
+		float panelY = 0.00f;
+		float panelZ = -4.0f;
 
 
-		D3DXMATRIX skyRotMat, terrMat;
-		D3DXMatrixRotationX(&skyRotMat, D3DXToRadian(-90));
-		skydomo->UpdateScene(skyRotMat);
+		// Separacion entre paneles
+		float separacionPaneles = 9.0f;
+
+		// CENTRO REAL DEL MODELO BTN.OBJ
+		float centroX = 38.0706f;
+		float centroZ = -114.3422f;
+
+		// Llevar al centro de rotacion
+		D3DXMatrixTranslation(&moverOrigen, -centroX, 0.0f, -centroZ);
+
+		// Girar 180 grados sobre Y
+		D3DXMatrixRotationY(&rotacionPanel, D3DXToRadian(180.0f));
+
+		// Regresar a la posicion original
+		D3DXMatrixTranslation(&regresarOrigen, centroX, 0.0f, centroZ);
+
+		// PANEL 1
+		D3DXMatrixTranslation(&posicionPanel1, panelX, panelY, panelZ);
+		matrizPanel1 = moverOrigen * rotacionPanel * regresarOrigen * posicionPanel1 * matrizLaboratorio;
+
+		// PANEL 2
+		D3DXMatrixTranslation(&posicionPanel2, panelX, panelY, panelZ - separacionPaneles);
+		matrizPanel2 = moverOrigen * rotacionPanel * regresarOrigen * posicionPanel2 * matrizLaboratorio;
+
+		// PANEL 3
+		D3DXMatrixTranslation(&posicionPanel3, panelX, panelY, panelZ - separacionPaneles * 2.0f);
+		matrizPanel3 = moverOrigen * rotacionPanel * regresarOrigen * posicionPanel3 * matrizLaboratorio;
+	
+
+		// ESCRITORIO 
+
+		D3DXMATRIX origenEscritorio;
+		D3DXMATRIX escalaEscritorio;
+		D3DXMATRIX rotacionEscritorio;
+		D3DXMATRIX regresoEscritorio;
+		D3DXMATRIX posicionEscritorio;
+
+		float centroEscritorioX = 0.0f;
+		float centroEscritorioY = 0.0f;
+		float centroEscritorioZ = 0.0f;
+
+		D3DXMatrixTranslation(&origenEscritorio,
+			-centroEscritorioX,
+			-centroEscritorioY,
+			-centroEscritorioZ);
+
+		D3DXMatrixScaling(&escalaEscritorio, 1.20f, 1.20f, 1.20f);
+
+		D3DXMatrixRotationY(&rotacionEscritorio, D3DXToRadian(180.0f));
+
+		D3DXMatrixTranslation(&regresoEscritorio,
+			centroEscritorioX,
+			centroEscritorioY,
+			centroEscritorioZ);
+
+		D3DXMatrixTranslation(&posicionEscritorio, 11.0f, 0.2f, 9.5f);
+
+		matrizEscritorio = origenEscritorio * escalaEscritorio * rotacionEscritorio * regresoEscritorio * posicionEscritorio * matrizLaboratorio;
+
+		escritorioDesk->UpdateScene(matrizEscritorio);
+		escritorioDeskOld->UpdateScene(matrizEscritorio);
+		escritorioKeyboardOld->UpdateScene(matrizEscritorio);
+		escritorioKeybroard->UpdateScene(matrizEscritorio);
+		escritorioGrid->UpdateScene(matrizEscritorio);
+		escritorioGridOld->UpdateScene(matrizEscritorio);
+		escritorioCables->UpdateScene(matrizEscritorio);
+		escritorioCablesOld->UpdateScene(matrizEscritorio);
+		escritorioScreen->UpdateScene(matrizEscritorio);
+		escritorioScreenOld->UpdateScene(matrizEscritorio);
+		escritorioSoloScreen->UpdateScene(matrizEscritorio);
+		escritorioSoloScreenOld->UpdateScene(matrizEscritorio);
+
+		// COMPUTADORAS
+
+		D3DXMATRIX origenCompus, escalaCompus;
+		D3DXMATRIX rotacionCompus, regresoCompus, posicionCompus;
+		float centroCompusX = 3.953935f;
+		float centroCompusY = 1.322478f;
+		float centroCompusZ = -1.814324f;
 
 
-		//D3DXMatrixTranslation(&terrMat, -50, 0, -50);
-		D3DXMatrixIdentity(&terrMat);
-		terreno->UpdateScene(terrMat);
+		D3DXMatrixTranslation(&origenCompus,
+			-centroCompusX, -centroCompusY, -centroCompusZ);
+
+		// Escala 
+		D3DXMatrixScaling(&escalaCompus, 1.5f, 1.5f, 1.5f);
+
+		// Rotacion 
+		D3DXMatrixRotationY(&rotacionCompus, D3DXToRadian(180.0f));
+
+		D3DXMatrixTranslation(&regresoCompus,
+			centroCompusX, centroCompusY, centroCompusZ);
+
+		// Posicion 
+		D3DXMatrixTranslation(&posicionCompus, .0f, 0.0f, 0.0f);
+
+		// Matriz final
+		matrizCompus = origenCompus * escalaCompus * rotacionCompus *
+			regresoCompus * posicionCompus * matrizLaboratorio;
+
+		compus->UpdateScene(matrizCompus);
 
 
-		//temporal prueba
-		//camara->Position.y = terreno->getTerrainCollision(camara->getXZ()) +3;
+
 
 		BoundingSphere1->UpdateScene(Bounding1 * MatAcomodo * BoundinMatTranslation);
 		BoundingSphere2->UpdateScene(Bounding2 * MatAcomodo);
@@ -490,7 +713,7 @@ public:
 		if (CheckBoundingSphereCollision(BoundingSphere1->PrimitiveBoundings->Radius,
 			BoundingSphere1->PrimitiveBoundings->PositionM, BoundingSphere1->getWorldMatrix(),
 			BoundingSphere2->PrimitiveBoundings->Radius,
-			BoundingSphere2->PrimitiveBoundings->PositionM, BoundingSphere2->getWorldMatrix())){
+			BoundingSphere2->PrimitiveBoundings->PositionM, BoundingSphere2->getWorldMatrix())) {
 
 			BoundingSphereTranslation = LastBoundingPosition;
 		}
@@ -506,19 +729,33 @@ public:
 		D3DXCOLOR bgColor(0.0f, 0.0f, 0.25f, 1.0f);
 		d3d11DevCon->ClearRenderTargetView(renderTargetView, bgColor);
 		//Refresh the Depth/Stencil view
-		d3d11DevCon->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH|D3D11_CLEAR_STENCIL, 1.0f, 0);
-		
+		d3d11DevCon->ClearDepthStencilView(depthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 		cubo->DrawScene(camara);
 		esfera->DrawScene(camara);
 		toroide->DrawScene(camara);
 		cilindro->DrawScene(camara);
-		
+
 		cono->DrawScene(camara);
 		billboard->DrawScene(camara);
 
 		//Lab estructura
+		// PAREDES SUPERIORES Y LETREROS
 		paredesArriba->DrawScene(camara);
 		marcosArriba->DrawScene(camara);
+		paredesArribaVentanas->DrawScene(camara);
+
+		letreroLet1->DrawScene(camara);
+		letreroLet3->DrawScene(camara);
+		letreroLet4->DrawScene(camara);
+		letreroLet5->DrawScene(camara);
+		letreroLet6->DrawScene(camara);
+		letreroLet7->DrawScene(camara);
+		letreroLet8->DrawScene(camara);
+		letreroLet9->DrawScene(camara);
+		letreroLet10->DrawScene(camara);
+		letreroLet11->DrawScene(camara);
+
 		franja->DrawScene(camara);
 		paredesAbajo->DrawScene(camara);
 		paredesAbajoPB->DrawScene(camara);
@@ -545,6 +782,80 @@ public:
 		puertasMarco->DrawScene(camara);
 		puertasPB->DrawScene(camara);
 		marcosVentanas->DrawScene(camara);
+		// CELDA 1
+		celdaMetal->UpdateScene(matrizCelda1);
+		celdaVidrio->UpdateScene(matrizCelda1);
+		celdaLuces->UpdateScene(matrizCelda1);
+
+		celdaMetal->DrawScene(camara);
+		celdaVidrio->DrawScene(camara);
+		celdaLuces->DrawScene(camara);
+
+		// CELDA 2
+		celdaMetal->UpdateScene(matrizCelda2);
+		celdaVidrio->UpdateScene(matrizCelda2);
+		celdaLuces->UpdateScene(matrizCelda2);
+
+		celdaMetal->DrawScene(camara);
+		celdaVidrio->DrawScene(camara);
+		celdaLuces->DrawScene(camara);
+
+		// CELDA 3
+		celdaMetal->UpdateScene(matrizCelda3);
+		celdaVidrio->UpdateScene(matrizCelda3);
+		celdaLuces->UpdateScene(matrizCelda3);
+
+		celdaMetal->DrawScene(camara);
+		celdaVidrio->DrawScene(camara);
+		celdaLuces->DrawScene(camara);
+
+		panelMetal->UpdateScene(matrizPanel1);
+		panelPared->UpdateScene(matrizPanel1);
+		panelPantalla->UpdateScene(matrizPanel1);
+		panelBotonRojo->UpdateScene(matrizPanel1);
+
+		panelMetal->DrawScene(camara);
+		panelPared->DrawScene(camara);
+		panelPantalla->DrawScene(camara);
+		panelBotonRojo->DrawScene(camara);
+
+		panelMetal->UpdateScene(matrizPanel2);
+		panelPared->UpdateScene(matrizPanel2);
+		panelPantalla->UpdateScene(matrizPanel2);
+		panelBotonVerde->UpdateScene(matrizPanel2);
+
+		panelMetal->DrawScene(camara);
+		panelPared->DrawScene(camara);
+		panelPantalla->DrawScene(camara);
+		panelBotonVerde->DrawScene(camara);
+
+		panelMetal->UpdateScene(matrizPanel3);
+		panelPared->UpdateScene(matrizPanel3);
+		panelPantalla->UpdateScene(matrizPanel3);
+		panelBotonAzul->UpdateScene(matrizPanel3);
+
+		panelMetal->DrawScene(camara);
+		panelPared->DrawScene(camara);
+		panelPantalla->DrawScene(camara);
+		panelBotonAzul->DrawScene(camara);
+
+		// DIBUJAR ESCRITORIO
+		escritorioDesk->DrawScene(camara);
+		escritorioDeskOld->DrawScene(camara);
+		escritorioKeyboardOld->DrawScene(camara);
+		escritorioKeybroard->DrawScene(camara);
+		escritorioGrid->DrawScene(camara);
+		escritorioGridOld->DrawScene(camara);
+		escritorioCables->DrawScene(camara);
+		escritorioCablesOld->DrawScene(camara);
+		escritorioScreen->DrawScene(camara);
+		escritorioScreenOld->DrawScene(camara);
+		escritorioSoloScreen->DrawScene(camara);
+		escritorioSoloScreenOld->DrawScene(camara);
+		compus->DrawScene(camara);
+
+
+
 
 		terreno->DrawScene(camara);
 		skydomo->DrawScene(skyCamara);
@@ -561,7 +872,7 @@ public:
 		SwapChain->Present(0, 0);
 	}
 
-	
+
 	bool CheckBoundingSphereCollision(float firstSphereRadius,
 		D3DXVECTOR3 firstSpherePos,
 		D3DXMATRIX firstObjWorldSpace,
@@ -592,8 +903,8 @@ public:
 		//If the bounding spheres are not colliding, return false
 		return false;
 	}
-	
-	
+
+
 };
 
 #endif
