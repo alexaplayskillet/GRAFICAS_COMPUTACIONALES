@@ -169,15 +169,15 @@ public:
 		LoadModel(modelObjectPath);
 	}
 
-	MPrimitives(ID3D11Device* d3d11Device, ID3D11DeviceContext* d3d11DevCon, float Height, float Width, LPCWSTR texturePath)
+	MPrimitives(ID3D11Device* d3d11Device, ID3D11DeviceContext* d3d11DevCon, float Height, float Width, LPCWSTR texturePath, int ShaderType = ShaderDiffuse)
 	{
 		this->Height = Height;
 		this->Width = Width;
 		faceToCam = true;
 
-		InitScene(d3d11Device, d3d11DevCon, texturePath, L"", ShaderDiffuse);
+		InitScene(d3d11Device, d3d11DevCon, texturePath, L"", ShaderType);
 		createBillboard();
-	}
+	} // se agrego un parametro para que el billboard pueda ser usado como GUI
 
 	MPrimitives(ID3D11Device* d3d11Device, ID3D11DeviceContext* d3d11DevCon, float Height, float Width, LPCWSTR texturePath, Camara* camara){
 

@@ -32,9 +32,37 @@ private:
 	MPrimitives* cono;
 	MPrimitives* cilindro;
 	MPrimitives* billboard;
+	MPrimitives* iconoTomar;
+	//FUEGOOO
+	MPrimitives* fuego[3];
+	struct Fuego
+	{
+		D3DXVECTOR3 pos;
+		float tam;
+		bool activo;
+	};
+	Fuego fuegos[10];
+	int numFuegos;
+	//
 	MPrimitives* skydomo;
 	MPrimitives* terreno;
 	MPrimitives* Bitmap;
+	// RECOGER ITEMS - datos de cada itm
+	struct Item
+	{
+		MPrimitives* modelo;
+		MPrimitives* icono;
+		D3DXVECTOR3 pos;
+		float escala;
+		bool recogido;
+	};
+	Item items[1];
+	static const int CUBETA = 0;
+	bool teclaFAntes;
+	int numItems;
+	int itemCercano;
+	int itemEnMano;
+	bool teclaEAntes;
 	MPrimitives* BoundingSphere1;
 	MPrimitives* BoundingSphere2;
 
@@ -142,6 +170,29 @@ public:
 		rotPerFrame = 0.0f;
 	}
 
+	// RECOGER ITEMS -fn para crear un item y recibe modelo
+
+	Item CrearItem(MPrimitives* modelo, LPCWSTR icono, D3DXVECTOR3 pos, float escala)
+	{
+		Item it;
+		it.modelo = modelo;
+		it.icono = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, icono, camara);
+		it.pos = pos;
+		it.escala = escala;
+		it.recogido = false;
+		return it;
+	}
+
+	// Fuegos
+
+	void AgregarFuego(float x, float z, float tam)
+	{
+		fuegos[numFuegos].pos = D3DXVECTOR3(x, 1.18f + 2.0f * tam, z);
+		fuegos[numFuegos].tam = tam;
+		fuegos[numFuegos].activo = true;
+		numFuegos++;
+	}
+
 	bool InitDevice(HWND hwnd, int Width, int Height)
 	{
 		//Describe our Buffer
@@ -229,6 +280,18 @@ public:
 		cilindro = new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 1.0f, 2.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		cono = new MPrimitives(d3d11Device, d3d11DevCon, 16, 0.0f, 1.0f, 2.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		billboard = new MPrimitives(d3d11Device, d3d11DevCon, 2.0f, 2.0f, L"Texturas/ave.png");
+		// RECOGER ITEMS icono
+		iconoTomar = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, 1.0f, L"Texturas/ave.png");
+
+		//Fuego
+		fuego[0] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderGUI);
+		fuego[1] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderGUI);
+		fuego[2] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderGUI);
+		numFuegos = 0;
+		AgregarFuego(157.5f, 130.0f, 1.0f);
+		AgregarFuego(130.0f, 152.0f, 1.3f);
+		AgregarFuego(185.0f, 170.0f, 0.8f);
+		AgregarFuego(125.0f, 125.0f, 0.7f);
 
 		skydomo = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1000.0f, L"Texturas/sky2.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		terreno = new MPrimitives(d3d11Device, d3d11DevCon, 100.0f, L"Texturas/leaves.jpg", L"Texturas/tierra.png", "Texturas/height3.bmp", ShaderMultitextura);
@@ -352,6 +415,31 @@ public:
 
 		DIKeyboard->GetDeviceState(sizeof(keyboardState), (LPVOID)&keyboardState);
 
+		// RECOGER ITEMS con E
+		bool teclaE = (keyboardState[DIK_E] & 0x80) != 0;
+		if (teclaE && !teclaEAntes && itemCercano >= 0)
+		{
+			items[itemCercano].recogido = true;
+			itemEnMano = itemCercano;
+		}
+		teclaEAntes = teclaE;
+		bool teclaF = (keyboardState[DIK_F] & 0x80) != 0;
+		if (teclaF && !teclaFAntes && itemEnMano == CUBETA)
+		{
+			int cercano = -1;
+			float distMin = 10.0f;
+			for (int i = 0; i < numFuegos; i++)
+			{
+				if (!fuegos[i].activo) continue;
+				D3DXVECTOR3 dif = camara->Position - fuegos[i].pos;
+				dif.y = 0;
+				float d = D3DXVec3Length(&dif);
+				if (d < distMin) { distMin = d; cercano = i; }
+			}
+			if (cercano >= 0) fuegos[cercano].activo = false;
+		}
+		teclaFAntes = teclaF;
+
 		float speed = 0.05f;
 
 		float moveLeftRight = 0;
@@ -441,17 +529,27 @@ public:
 		d3d11DevCon->RSSetViewports(1, &viewport);
 
 		//Create the camera
-		D3DXVECTOR3 Position = D3DXVECTOR3(155.25f, 5.0f, 81.25f);
+		D3DXVECTOR3 Position = D3DXVECTOR3(265.25f, 5.0f, 103.25f);
 		D3DXVECTOR3 Target = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		D3DXVECTOR3 Up = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 
 
 		camara = new Camara(Position, Target, Up, Width, Height);
+		camara->Yaw = D3DXToRadian(270.0f);
 		skyCamara = new Camara(Position, Target, Up, Width, Height);
 		//esta es la gui
 		hudVida = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Health.png", camara);
 		hudMapa = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/mapa.png", camara);
+
+
+		// RECOGER ITEMS
+		items[CUBETA] = CrearItem(new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 0.8f, 1.5f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse), L"Texturas/Health.png", D3DXVECTOR3(157.5f, 2.2f, 100.0f), 1.0f);
+		numItems = 1;
+		itemCercano = -1;
+		itemEnMano = -1;
+		teclaEAntes = false;
+		teclaFAntes = false;
 
 		return true;
 	}
@@ -721,6 +819,34 @@ public:
 
 		DummyBoundyEvents.x = 0;
 		DummyBoundyEvents.y = 0;
+
+		// RECOGER ITEMS
+		itemCercano = -1;
+		float distMin = 8.0f;
+		for (int i = 0; i < numItems; i++)
+		{
+			if (items[i].recogido) continue;
+
+			D3DXMATRIX esc, tras, mat;
+			D3DXMatrixScaling(&esc, items[i].escala, items[i].escala, items[i].escala);
+			D3DXMatrixTranslation(&tras, items[i].pos.x, items[i].pos.y, items[i].pos.z);
+			mat = esc * tras;
+			items[i].modelo->UpdateScene(mat);
+
+			D3DXVECTOR3 dif = camara->Position - items[i].pos;
+			dif.y = 0;
+			float dist = D3DXVec3Length(&dif);
+			if (dist < distMin) { distMin = dist; itemCercano = i; }
+		}
+
+		if (itemCercano >= 0)
+		{
+			D3DXVECTOR3 p = items[itemCercano].pos;
+			D3DXMATRIX matIcono;
+			D3DXMatrixTranslation(&matIcono, p.x, p.y + 2.5f + sin(rotPerFrame * 0.05f) * 0.3f, p.z);
+			iconoTomar->UpdateScene(matIcono);
+		}
+
 	}
 
 	void DrawScene()
@@ -860,13 +986,55 @@ public:
 		terreno->DrawScene(camara);
 		skydomo->DrawScene(skyCamara);
 
+		// RECOGER ITEMS dibujarlos
+		for (int i = 0; i < numItems; i++)
+			if (!items[i].recogido) items[i].modelo->DrawScene(camara);
+
 		BoundingSphere1->DrawScene(camara);
 		BoundingSphere2->DrawScene(camara);
+
+		if (itemCercano >= 0) iconoTomar->DrawScene(camara);
+
+		if (itemEnMano >= 0)
+		{
+			D3DXMATRIX esc, offset, rot, tras, mat;
+			float e = items[itemEnMano].escala * 0.5f;
+			D3DXMatrixScaling(&esc, e, e, e);
+			D3DXMatrixTranslation(&offset, 1.2f, -1.0f, 2.5f);
+			D3DXMatrixRotationYawPitchRoll(&rot, camara->Yaw, camara->Pitch, 0);
+			D3DXMatrixTranslation(&tras, camara->Position.x, camara->Position.y, camara->Position.z);
+			mat = esc * offset * rot * tras;
+			items[itemEnMano].modelo->UpdateScene(mat);
+			items[itemEnMano].modelo->DrawScene(camara);
+		}
+
+		// fuego 
+		for (int i = 0; i < numFuegos; i++)
+		{
+			if (!fuegos[i].activo) continue;
+			float t = fuegos[i].tam * (1.0f + sin(rotPerFrame * 0.3f + i * 1.7f) * 0.05f);
+			D3DXMATRIX escF, trasF, matF;
+			D3DXMatrixScaling(&escF, t, t, 1.0f);
+			D3DXMatrixTranslation(&trasF, fuegos[i].pos.x, fuegos[i].pos.y, fuegos[i].pos.z);
+			matF = escF * trasF;
+			int cuadro = (GetTickCount() / 120 + i) % 3;
+			fuego[cuadro]->UpdateScene(matF);
+			fuego[cuadro]->DrawScene(camara);
+		}
 
 		// gui, camra posx popsy ancho alto
 		hudVida->DrawBitmap(camara, -0.90f, 0.85f, 0.30f, 0.30f);  // arriba a la izquierda
 		hudMapa->DrawBitmap(camara, 0.80f, -0.70f, 0.30f, 0.30f);  // abajo a la derecha
 
+		// RECOGER ITEMS pero el hud
+		float x = -0.85f;
+		for (int i = 0; i < numItems; i++)
+		{
+			if (!items[i].recogido) continue;
+			float alto = (i == itemEnMano) ? 0.30f : 0.22f;
+			items[i].icono->DrawBitmap(camara, x, -0.82f, alto * 0.75f, alto);
+			x += 0.22f;
+		}
 
 		//Present the backbuffer to the screen
 		SwapChain->Present(0, 0);
