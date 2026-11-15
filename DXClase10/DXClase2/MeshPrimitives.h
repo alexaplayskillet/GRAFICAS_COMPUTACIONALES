@@ -224,6 +224,12 @@ public:
 		case ShaderMultitextura:
 			pixelShaderFile = L"pixelShaderMultitextura.ps";
 			break;
+		case ShaderFuego:
+			pixelShaderFile = L"pixelShaderFuego.ps";
+			break;
+		case ShaderItem:
+			pixelShaderFile = L"pixelShaderItem.ps";
+			break;
 		default:
 			break;
 		}

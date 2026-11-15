@@ -1,0 +1,37 @@
+struct Light
+{
+	float3 direction;
+	float specularPower;
+	float4 ambient;
+	float4 diffuse;
+	float4 fuegoPos;
+	float4 efectos;
+};
+
+cbuffer ConstantBufferPS
+{
+	Light light;
+};
+
+struct VS_OUTPUT
+{
+	float4 Pos : SV_POSITION;
+	float2 TexCoord : TEXTURE;
+};
+
+Texture2D ObjTexture;
+SamplerState ObjSamplerState;
+
+float4 PS(VS_OUTPUT input) : SV_Target
+{
+	float t = light.efectos.x;
+	float2 uv = input.TexCoord;
+
+	uv.x += sin(uv.y * 15.0 + t * 10.0) * 0.03 * (1.0 - uv.y);
+
+	float4 c = ObjTexture.Sample(ObjSamplerState, uv);
+	clip(c.a - 0.9f);
+
+	float brillo = 1.1 + 0.25 * sin(t * 17.0) * sin(t * 5.0);
+	return float4(c.rgb * brillo, 1);
+}

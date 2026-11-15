@@ -92,7 +92,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="pixelShader.ps" />
+    <None Include="pixelShaderFuego.ps" />
     <None Include="pixelShaderGUI.ps" />
+    <None Include="pixelShaderItem.ps" />
     <None Include="pixelShaderMultitextura.ps" />
     <None Include="vertexShader.vs" />
   </ItemGroup>
