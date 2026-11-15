@@ -4,5 +4,7 @@ enum shaders
 	ShaderSpecular = 1,
 	ShaderNormalmap = 2,
 	ShaderGUI = 3,
-	ShaderMultitextura = 4
+	ShaderMultitextura = 4,
+	ShaderFuego = 5,
+	ShaderItem = 6
 };

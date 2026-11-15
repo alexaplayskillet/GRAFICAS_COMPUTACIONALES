@@ -25,6 +25,8 @@ private:
 	D3DXMATRIX View;
 	D3DXMATRIX Projection;
 
+	//shader calor
+	DWORD inicioJuego;
 
 	MPrimitives* cubo;
 	MPrimitives* esfera;
@@ -292,9 +294,9 @@ public:
 		iconoTomar = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, 1.0f, L"Texturas/ave.png");
 
 		//Fuego
-		fuego[0] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderGUI);
-		fuego[1] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderGUI);
-		fuego[2] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderGUI);
+		fuego[0] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderFuego);
+		fuego[1] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderFuego);
+		fuego[2] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderFuego);
 		numFuegos = 0;
 		AgregarFuego(157.5f, 130.0f, 1.0f);
 		AgregarFuego(130.0f, 152.0f, 1.3f);
@@ -538,6 +540,11 @@ public:
 		light.ambient = D3DXVECTOR4(0.3f, 0.3f, 0.3f, 1.0f);
 		light.diffuse = D3DXVECTOR4(1.0f, 1.0f, 1.0f, 1.0f);
 
+		//Shader calor
+		light.fuegoPos = D3DXVECTOR4(0, 0, 0, 0);
+		light.efectos = D3DXVECTOR4(0, 1, 0, 0);
+		inicioJuego = GetTickCount();
+
 		//Set the Viewport
 		d3d11DevCon->RSSetViewports(1, &viewport);
 
@@ -557,7 +564,7 @@ public:
 
 
 		// RECOGER ITEMS
-		items[CUBETA] = CrearItem(new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 0.8f, 1.5f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse), L"Texturas/Health.png", D3DXVECTOR3(157.5f, 2.2f, 100.0f), 1.0f);
+		items[CUBETA] = CrearItem(new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 0.8f, 1.5f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderItem), L"Texturas/Health.png", D3DXVECTOR3(157.5f, 2.2f, 100.0f), 1.0f);
 		numItems = 1;
 		itemCercano = -1;
 		itemEnMano = -1;
@@ -577,10 +584,21 @@ public:
 
 	void UpdateScene()
 	{
+		light.efectos.x = (GetTickCount() - inicioJuego) / 1000.0f;
+
+		//Shader fuego con efecto naranja
+		D3DXVECTOR3 centro(0, 0, 0);
+		int activos = 0;
+		for (int i = 0; i < numFuegos; i++)
+		{
+			if (fuegos[i].activo) { centro += fuegos[i].pos; activos++; }
+		}
+		if (activos > 0) centro /= (float)activos;
+		light.fuegoPos = D3DXVECTOR4(centro.x, centro.y, centro.z, numFuegos > 0 ? (float)activos / numFuegos : 0.0f);
 
 		LastBoundingPosition = BoundingSphereTranslation;
 		BoundingSphereTranslation += DummyBoundyEvents;
-
+		////
 
 		rotPerFrame += 0.1f;
 
@@ -1007,6 +1025,9 @@ public:
 		terreno->DrawScene(camara);
 		skydomo->DrawScene(skyCamara);
 
+		//para shader item
+		light.efectos.z = 1.0f;
+
 		// RECOGER ITEMS dibujarlos
 		for (int i = 0; i < numItems; i++)
 			if (!items[i].recogido) items[i].modelo->DrawScene(camara);
@@ -1015,6 +1036,9 @@ public:
 		BoundingSphere2->DrawScene(camara);
 
 		if (itemCercano >= 0) iconoTomar->DrawScene(camara);
+
+		//para shader item
+		light.efectos.z = 0.0f;
 
 		if (itemEnMano >= 0)
 		{

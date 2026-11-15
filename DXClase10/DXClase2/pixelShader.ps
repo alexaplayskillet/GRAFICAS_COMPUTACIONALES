@@ -4,6 +4,8 @@ struct Light
 	float specularPower;
 	float4 ambient;
 	float4 diffuse;
+	float4 fuegoPos;
+	float4 efectos;
 };
 
 cbuffer ConstantBufferPS
@@ -19,22 +21,33 @@ struct VS_OUTPUT
 	float3 viewDirection : COORDS;
 	float3 tangent : TANGENT;
 	float3 binormal : BINORMAL;
+	float4 vectPos : POSITION;
+	float maxHeight : HEIGHT;
+	float3 worldPos : WORLDPOS;
+	float distCam : DISTCAM;
 };
 
 Texture2D ObjTexture;
 Texture2D ObjNormTex;
 SamplerState ObjSamplerState;
 
-float4 PS( VS_OUTPUT input ) : SV_Target
+float4 PS(VS_OUTPUT input) : SV_Target
 {
 	input.normal = normalize(input.normal);
-	float4 textureColor = ObjTexture.Sample( ObjSamplerState, input.TexCoord );
-
-	float3 finalColor = textureColor * light.ambient;
-	finalColor += saturate(dot(light.direction, input.normal) * light.diffuse * textureColor);
-
+	float4 textureColor = ObjTexture.Sample(ObjSamplerState, input.TexCoord);
 	clip(textureColor.a - 0.9f);
 
+	float3 finalColor = textureColor.rgb * light.ambient.rgb;
+	finalColor += saturate(dot(light.direction, input.normal) * light.diffuse.rgb * textureColor.rgb);
+
+	// luz del incendio
+	float t = light.efectos.x;
+	float3 haciaFuego = light.fuegoPos.xyz - input.worldPos;
+	float dist = length(haciaFuego);
+	float atenuacion = saturate(1.0 - dist / 45.0);
+	float difFuego = saturate(dot(normalize(haciaFuego), input.normal));
+	float parpadeo = 0.8 + 0.2 * sin(t * 13.0) * sin(t * 7.0);
+	finalColor += textureColor.rgb * float3(1.0, 0.45, 0.1) * difFuego * atenuacion * atenuacion * parpadeo * light.fuegoPos.w * 2.0;
+
 	return float4(finalColor, textureColor.a);
-	//return textureColor;
 }

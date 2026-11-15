@@ -16,6 +16,9 @@ struct VS_OUTPUT
 	float3 binormal : BINORMAL;
 	float4 vectPos : POSITION;
 	float maxHeight : HEIGHT;
+	float3 worldPos : WORLDPOS;
+	float distCam : DISTCAM;
+	float3 haciaCam : HACIACAM;
 };
 
 VS_OUTPUT VS(float4 inPos : POSITION, float4 inTextCoord : TEXTURE, float3 normal : NORMAL, float3 tangent : TANGENT, float3 binormal : BINORMAL)
@@ -30,6 +33,9 @@ VS_OUTPUT VS(float4 inPos : POSITION, float4 inTextCoord : TEXTURE, float3 norma
 	output.binormal = mul(binormal, World);
 	output.vectPos = inPos;
 	output.maxHeight = MaxH;
+	output.worldPos = mul(inPos, World).xyz;
+	output.distCam = distance(output.worldPos, CameraPos);
+	output.haciaCam = CameraPos - output.worldPos;
 
     return output;
 }

@@ -49,6 +49,8 @@
     <None Include="pixelShaderMultitextura.ps">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="pixelShaderFuego.ps" />
+    <None Include="pixelShaderItem.ps" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="pixelShaderNormalMap.ps">
