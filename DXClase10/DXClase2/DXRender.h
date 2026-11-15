@@ -59,12 +59,20 @@ private:
 	Item items[1];
 	static const int CUBETA = 0;
 	bool teclaFAntes;
+	bool teclaVAntes;
 	int numItems;
 	int itemCercano;
 	int itemEnMano;
 	bool teclaEAntes;
 	MPrimitives* BoundingSphere1;
 	MPrimitives* BoundingSphere2;
+
+	//Phong
+	MPrimitives* cuerpo;
+	MPrimitives* cabeza;
+	float escalaPersonaje;
+	float pisoPersonaje;
+	float giroPersonaje;
 
 	//HUD
 	MPrimitives* hudVida;
@@ -440,6 +448,11 @@ public:
 		}
 		teclaFAntes = teclaF;
 
+		//3era persona
+		bool teclaV = (keyboardState[DIK_V] & 0x80) != 0;
+		if (teclaV && !teclaVAntes) camara->terceraPersona = !camara->terceraPersona;
+		teclaVAntes = teclaV;
+
 		float speed = 0.05f;
 
 		float moveLeftRight = 0;
@@ -549,7 +562,15 @@ public:
 		itemCercano = -1;
 		itemEnMano = -1;
 		teclaEAntes = false;
-		teclaFAntes = false;
+		teclaFAntes = false; 
+		//3era persona
+		teclaVAntes = false;
+
+		cuerpo = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/phong/cuerpo.txt", L"../Objetos/plantilla/DXclase1/phong/Flo_Body.png", L"", ShaderDiffuse);
+		cabeza = new MPrimitives(d3d11Device, d3d11DevCon, (char*)"../Objetos/plantilla/DXclase1/phong/cabeza.txt", L"../Objetos/plantilla/DXclase1/phong/Flo_head.png", L"", ShaderDiffuse);
+		escalaPersonaje = 3.4f;
+		pisoPersonaje = 1.2f;
+		giroPersonaje = 180.0f;
 
 		return true;
 	}
@@ -1006,6 +1027,19 @@ public:
 			mat = esc * offset * rot * tras;
 			items[itemEnMano].modelo->UpdateScene(mat);
 			items[itemEnMano].modelo->DrawScene(camara);
+		}
+		//3era persona
+		if (camara->terceraPersona)
+		{
+			D3DXMATRIX escP, rotP, trasP, matP;
+			D3DXMatrixScaling(&escP, escalaPersonaje, escalaPersonaje, escalaPersonaje);
+			D3DXMatrixRotationY(&rotP, camara->Yaw + D3DXToRadian(giroPersonaje));
+			D3DXMatrixTranslation(&trasP, camara->Position.x, pisoPersonaje, camara->Position.z);
+			matP = escP * rotP * trasP;
+			cuerpo->UpdateScene(matP);
+			cuerpo->DrawScene(camara);
+			cabeza->UpdateScene(matP);
+			cabeza->DrawScene(camara);
 		}
 
 		// fuego 
