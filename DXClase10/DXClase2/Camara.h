@@ -22,6 +22,11 @@ public:
 	float Yaw;
 	float Pitch;
 
+	// 3ra persona cam
+	bool terceraPersona;
+	float distancia;
+	float alturaCam;
+
 	Camara(D3DXVECTOR3 Position, D3DXVECTOR3 Target, D3DXVECTOR3 Up, int Width, int Height)
 	{
 		this->Position = Position;
@@ -43,6 +48,11 @@ public:
 
 		Yaw = 0.0f;
 		Pitch = 0.0f;
+
+		//3era persona valores
+		terceraPersona = false;
+		distancia = 10.0f;
+		alturaCam = 1.0f;
 	}
 
 	void UpdateCamera(float moveBackForward, float moveLeftRight, float yaw, float pitch)
@@ -69,7 +79,17 @@ public:
 
 		Target = Position + Target;
 
-		D3DXMatrixLookAtLH(&View, &Position, &Target, &Up);
+		// 3era persona movimiento
+		if (terceraPersona)
+		{
+			D3DXVECTOR3 dir = Target - Position;
+			D3DXVECTOR3 ojo = Position - dir * distancia + D3DXVECTOR3(0, alturaCam, 0);
+			D3DXMatrixLookAtLH(&View, &ojo, &Target, &Up);
+		}
+		else
+		{
+			D3DXMatrixLookAtLH(&View, &Position, &Target, &Up);
+		}
 	}
 
 	void setSkyCamara(Camara *camara)
