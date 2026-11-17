@@ -13,11 +13,11 @@
 #define FILAS_FUEGO 9
 #define NUM_CASILLAS 99
 #define NUM_HORAS 6
-#define HORA_SEG 90.0f
+#define HORA_SEG 45.0f
 #define TIEMPO_BOTON 10.0f
 #define TIEMPO_ESCONDITE 60.0f
 #define PROPAGA_SEG 3.0f
-#define PAUSA_SEG 8.0f
+#define PAUSA_SEG 5.0f
 #define RADIO_JUGADOR 1.4f
 #define DENSIDAD_NIEBLA 0.018f
 
@@ -482,7 +482,7 @@ public:
 			else if (monstruo == 1)
 			{
 				tJumpscare += dt;
-				if (tJumpscare >= 2.2f) Perder(1);
+				if (tJumpscare >= 1.8f) Perder(1);
 			}
 		}
 		else if (estado == EstadoMago)
