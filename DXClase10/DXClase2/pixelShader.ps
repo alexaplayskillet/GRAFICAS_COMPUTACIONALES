@@ -49,5 +49,8 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	float parpadeo = 0.8 + 0.2 * sin(t * 13.0) * sin(t * 7.0);
 	finalColor += textureColor.rgb * float3(1.0, 0.45, 0.1) * difFuego * atenuacion * atenuacion * parpadeo * light.fuegoPos.w * 2.0;
 
+	float niebla = saturate(1.0 - exp(-input.distCam * light.efectos.w));
+	finalColor = lerp(finalColor, float3(0.30, 0.32, 0.38), niebla);
+
 	return float4(finalColor, textureColor.a);
 }

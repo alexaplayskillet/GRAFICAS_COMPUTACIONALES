@@ -4,6 +4,8 @@ struct Light
 	float specularPower;
 	float4 ambient;
 	float4 diffuse;
+	float4 fuegoPos;
+	float4 efectos;
 };
 
 cbuffer ConstantBufferPS
@@ -21,6 +23,8 @@ struct VS_OUTPUT
 	float3 binormal : BINORMAL;
 	float4 vectPos : POSITION;
 	float maxHeight : HEIGHT;
+	float3 worldPos : WORLDPOS;
+	float distCam : DISTCAM;
 };
 
 Texture2D ObjTexture;
@@ -49,5 +53,9 @@ float4 PS( VS_OUTPUT input ) : SV_Target
 	finalColor += saturate(dot(light.direction, input.normal) * light.diffuse * textureColor);
 
 
-	return float4(finalColor * 0.7, 1);
+	float3 resultado = finalColor * 0.7;
+	float niebla = saturate(1.0 - exp(-input.distCam * light.efectos.w));
+	resultado = lerp(resultado, float3(0.30, 0.32, 0.38), niebla);
+
+	return float4(resultado, 1);
 }

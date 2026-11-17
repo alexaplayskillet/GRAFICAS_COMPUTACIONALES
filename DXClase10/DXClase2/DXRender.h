@@ -6,6 +6,7 @@
 #include "Camara.h"
 #include "Light.h"
 #include "MeshPrimitives.h"
+#include "Juego.h"
 
 class DXRender
 {
@@ -43,7 +44,7 @@ private:
 		float tam;
 		bool activo;
 	};
-	Fuego fuegos[10];
+	Fuego fuegos[NUM_CASILLAS];
 	int numFuegos;
 	//
 	MPrimitives* skydomo;
@@ -79,6 +80,35 @@ private:
 	//HUD
 	MPrimitives* hudVida;
 	MPrimitives* hudMapa;
+
+	//Juego
+	Juego* juego;
+	D3DXMATRIX matrizLab;
+	D3DXMATRIX matrizLabInv;
+	LARGE_INTEGER frecuencia;
+	LARGE_INTEGER tickAntes;
+	float dt;
+	bool enAutoAntes;
+	float alturas[256 * 256];
+	MPrimitives* puertaModelo[NUM_PUERTAS];
+	MPrimitives* carpetaCubo;
+	MPrimitives* cajaCubo;
+	MPrimitives* lamparaCubo[3];
+	MPrimitives* ojosMonstruo;
+	MPrimitives* monstruoFeliz;
+	MPrimitives* magoBillboard;
+	MPrimitives* autoCuerpo;
+	MPrimitives* autoCabina;
+	MPrimitives* autoRueda;
+	MPrimitives* hudHoras[NUM_HORAS];
+	MPrimitives* hudBrief[3];
+	MPrimitives* hudMuerte[3];
+	MPrimitives* hudGanar;
+	MPrimitives* hudJumpscare;
+	MPrimitives* hudTeclaE;
+	MPrimitives* hudTeclaF;
+	MPrimitives* hudRanura;
+	MPrimitives* hudColor[3];
 
 	//Terreno modelos Lab 440
 	MPrimitives* paredesArriba;
@@ -178,6 +208,11 @@ public:
 	DXRender()
 	{
 		rotPerFrame = 0.0f;
+		juego = NULL;
+		dt = 0.0f;
+		enAutoAntes = false;
+		D3DXMatrixIdentity(&matrizLab);
+		D3DXMatrixIdentity(&matrizLabInv);
 	}
 
 	// RECOGER ITEMS -fn para crear un item y recibe modelo
@@ -291,17 +326,13 @@ public:
 		cono = new MPrimitives(d3d11Device, d3d11DevCon, 16, 0.0f, 1.0f, 2.0f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		billboard = new MPrimitives(d3d11Device, d3d11DevCon, 2.0f, 2.0f, L"Texturas/ave.png");
 		// RECOGER ITEMS icono
-		iconoTomar = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, 1.0f, L"Texturas/ave.png");
+		iconoTomar = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, 1.0f, L"Texturas/Juego/tecla_e.png");
 
 		//Fuego
-		fuego[0] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderFuego);
-		fuego[1] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderFuego);
-		fuego[2] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/ave.png", ShaderFuego);
+		fuego[0] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/fuego.png", ShaderFuego);
+		fuego[1] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/fuego.png", ShaderFuego);
+		fuego[2] = new MPrimitives(d3d11Device, d3d11DevCon, 4.0f, 3.0f, L"Texturas/fuego.png", ShaderFuego);
 		numFuegos = 0;
-		AgregarFuego(157.5f, 130.0f, 1.0f);
-		AgregarFuego(130.0f, 152.0f, 1.3f);
-		AgregarFuego(185.0f, 170.0f, 0.8f);
-		AgregarFuego(125.0f, 125.0f, 0.7f);
 
 		skydomo = new MPrimitives(d3d11Device, d3d11DevCon, 32, 32, 1000.0f, L"Texturas/sky2.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
 		terreno = new MPrimitives(d3d11Device, d3d11DevCon, 100.0f, L"Texturas/leaves.jpg", L"Texturas/tierra.png", "Texturas/height3.bmp", ShaderMultitextura);
@@ -387,6 +418,392 @@ public:
 		return true;
 	}
 
+	void InitJuego()
+	{
+		juego = new Juego();
+		QueryPerformanceFrequency(&frecuencia);
+		QueryPerformanceCounter(&tickAntes);
+
+		D3DXMATRIX alOrigen, rotacionLab, posicionLab;
+		D3DXMatrixTranslation(&alOrigen, -78.0f, 0.0f, 94.0f);
+		D3DXMatrixRotationY(&rotacionLab, D3DXToRadian(180.0f));
+		D3DXMatrixTranslation(&posicionLab, 191.25f, 1.0f, 191.25f);
+		matrizLab = alOrigen * rotacionLab * posicionLab;
+		D3DXMatrixInverse(&matrizLabInv, NULL, &matrizLab);
+
+		CargarAlturas("Texturas/height3.bmp");
+
+		char ruta[128];
+		for (int i = 0; i < NUM_PUERTAS; i++)
+		{
+			sprintf_s(ruta, "../Objetos/plantilla/DXclase1/puertas/puerta_%d.txt", i);
+			puertaModelo[i] = new MPrimitives(d3d11Device, d3d11DevCon, ruta, L"../Objetos/plantilla/DXclase1/puertas/puerta2.png", L"", ShaderDiffuse);
+		}
+
+		carpetaCubo = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, L"Texturas/Juego/clipboard.png", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
+		cajaCubo = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, L"Texturas/metalgearcaja.png", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
+		lamparaCubo[0] = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, L"Texturas/rojo.jpg", L"Texturas/escudoNormal.jpg", ShaderFuego);
+		lamparaCubo[1] = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, L"../Objetos/plantilla/DXclase1/paneles/verde.jpg", L"Texturas/escudoNormal.jpg", ShaderFuego);
+		lamparaCubo[2] = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, L"Texturas/azul.jpg", L"Texturas/escudoNormal.jpg", ShaderFuego);
+		autoCuerpo = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, L"Texturas/rojo.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
+		autoCabina = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, L"Texturas/gravel2.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
+		autoRueda = new MPrimitives(d3d11Device, d3d11DevCon, 1.0f, L"Texturas/rock.jpg", L"Texturas/escudoNormal.jpg", ShaderDiffuse);
+
+		ojosMonstruo = new MPrimitives(d3d11Device, d3d11DevCon, 1.6f, 3.2f, L"Texturas/Juego/ojos.png", ShaderFuego);
+		monstruoFeliz = new MPrimitives(d3d11Device, d3d11DevCon, 7.0f, 5.6f, L"Texturas/Juego/calacoFeliz.png", ShaderFuego);
+		magoBillboard = new MPrimitives(d3d11Device, d3d11DevCon, 9.0f, 6.0f, L"Texturas/Juego/mago.png", ShaderFuego);
+
+		const wchar_t* horas[NUM_HORAS] = { L"Texturas/HorasFNAF/12AM.png", L"Texturas/HorasFNAF/1AM.png", L"Texturas/HorasFNAF/2AM.png",
+			L"Texturas/HorasFNAF/3AM.png", L"Texturas/HorasFNAF/4AM.png", L"Texturas/HorasFNAF/5AM.png" };
+		for (int i = 0; i < NUM_HORAS; i++)
+			hudHoras[i] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, horas[i], camara);
+		hudBrief[0] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/txt_capsulas.png", camara);
+		hudBrief[1] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/txt_escondidas.png", camara);
+		hudBrief[2] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/txt_mago.png", camara);
+		hudMuerte[0] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/muerte_tiempo.png", camara);
+		hudMuerte[1] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/muerte_escondite.png", camara);
+		hudMuerte[2] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/muerte_fuego.png", camara);
+		hudGanar = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/ganar.png", camara);
+		hudJumpscare = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/jumpscare.png", camara);
+		hudTeclaE = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/tecla_e.png", camara);
+		hudTeclaF = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/tecla_f.png", camara);
+		hudRanura = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/Juego/ranura.png", camara);
+		hudColor[0] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/rojo.jpg", camara);
+		hudColor[1] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"../Objetos/plantilla/DXclase1/paneles/verde.jpg", camara);
+		hudColor[2] = new MPrimitives(d3d11Device, d3d11DevCon, 1, 1, L"Texturas/azul.jpg", camara);
+
+		numFuegos = NUM_CASILLAS;
+		for (int i = 0; i < NUM_CASILLAS; i++)
+		{
+			fuegos[i].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			fuegos[i].tam = 1.2f;
+			fuegos[i].activo = false;
+		}
+
+		ColocarAuto();
+	}
+
+	void CargarAlturas(const char* archivo)
+	{
+		FILE* f;
+		BITMAPFILEHEADER cab;
+		BITMAPINFOHEADER inf;
+		for (int i = 0; i < 256 * 256; i++) alturas[i] = 0.4f;
+		if (fopen_s(&f, archivo, "rb") != 0) return;
+		fread(&cab, sizeof(BITMAPFILEHEADER), 1, f);
+		fread(&inf, sizeof(BITMAPINFOHEADER), 1, f);
+		if (inf.biWidth == 256 && inf.biHeight == 256)
+		{
+			unsigned char* img = new unsigned char[256 * 256 * 3];
+			fseek(f, cab.bfOffBits, SEEK_SET);
+			fread(img, 1, 256 * 256 * 3, f);
+			for (int i = 0; i < 256 * 256; i++) alturas[i] = img[i * 3] / 25.0f;
+			delete[] img;
+		}
+		fclose(f);
+	}
+
+	float AlturaTerreno(float x, float z)
+	{
+		float fx = x / 1.5f;
+		float fz = z / 1.5f;
+		if (fx < 0.0f) fx = 0.0f;
+		if (fz < 0.0f) fz = 0.0f;
+		if (fx > 254.99f) fx = 254.99f;
+		if (fz > 254.99f) fz = 254.99f;
+		int i = (int)fx;
+		int j = (int)fz;
+		float tx = fx - i;
+		float tz = fz - j;
+		float h00 = alturas[j * 256 + i];
+		float h10 = alturas[j * 256 + i + 1];
+		float h01 = alturas[(j + 1) * 256 + i];
+		float h11 = alturas[(j + 1) * 256 + i + 1];
+		return (h00 * (1 - tx) + h10 * tx) * (1 - tz) + (h01 * (1 - tx) + h11 * tx) * tz;
+	}
+
+	D3DXVECTOR3 AModelo(D3DXVECTOR3 p)
+	{
+		D3DXVECTOR3 r;
+		D3DXVec3TransformCoord(&r, &p, &matrizLabInv);
+		return r;
+	}
+
+	D3DXVECTOR3 AMundo(D3DXVECTOR3 p)
+	{
+		D3DXVECTOR3 r;
+		D3DXVec3TransformCoord(&r, &p, &matrizLab);
+		return r;
+	}
+
+	float DistAuto()
+	{
+		float dx = camara->Position.x - juego->autoX;
+		float dz = camara->Position.z - juego->autoZ;
+		return sqrt(dx * dx + dz * dz);
+	}
+
+	void ColocarAuto()
+	{
+		D3DXVECTOR3 p = AMundo(D3DXVECTOR3(112.0f, 0.0f, 40.0f));
+		juego->AutoColocar(p.x, p.z, D3DXToRadian(180.0f));
+	}
+
+	void Reaparecer()
+	{
+		D3DXVECTOR3 p = AMundo(D3DXVECTOR3(28.5f, 4.0f, -38.0f));
+		camara->Position = p;
+		camara->Yaw = 0.0f;
+		camara->Pitch = 0.0f;
+		camara->terceraPersona = false;
+		camara->distancia = 10.0f;
+		camara->alturaCam = 1.0f;
+		camara->UpdateCamera(0.0f, 0.0f, 0.0f, 0.0f);
+		items[CUBETA].recogido = false;
+		itemEnMano = -1;
+		ColocarAuto();
+	}
+
+	void AccionE()
+	{
+		juego->PulsarE(AModelo(camara->Position), DistAuto());
+	}
+
+	void ColisionJugador(D3DXVECTOR3 antes)
+	{
+		D3DXVECTOR3 am = AModelo(antes);
+		D3DXVECTOR3 nm = AModelo(camara->Position);
+		bool cambio = juego->Resolver(am, nm);
+		D3DXVECTOR3 nw = cambio ? AMundo(nm) : camara->Position;
+
+		float dx = nw.x - juego->autoX;
+		float dz = nw.z - juego->autoZ;
+		float d = sqrt(dx * dx + dz * dz);
+		if (d < 6.5f && d > 0.001f)
+		{
+			nw.x = juego->autoX + dx / d * 6.5f;
+			nw.z = juego->autoZ + dz / d * 6.5f;
+			cambio = true;
+		}
+		if (cambio)
+		{
+			camara->Position.x = nw.x;
+			camara->Position.z = nw.z;
+			camara->UpdateCamera(0.0f, 0.0f, 0.0f, 0.0f);
+		}
+	}
+
+	void ConducirAuto(BYTE* teclas)
+	{
+		float acel = 0.0f;
+		float giro = 0.0f;
+		if (teclas[DIK_W] & 0x80) acel += 1.0f;
+		if (teclas[DIK_S] & 0x80) acel -= 1.0f;
+		if (teclas[DIK_D] & 0x80) giro += 1.0f;
+		if (teclas[DIK_A] & 0x80) giro -= 1.0f;
+
+		if (juego->estado == EstadoPasillo)
+		{
+			juego->AutoMover(dt, acel, giro);
+			D3DXVECTOR3 pm = AModelo(D3DXVECTOR3(juego->autoX, 0.0f, juego->autoZ));
+			if (juego->EnEdificio(pm)) juego->AutoRevertir();
+		}
+
+		float y = AlturaTerreno(juego->autoX, juego->autoZ);
+		camara->terceraPersona = true;
+		camara->Position = D3DXVECTOR3(juego->autoX, y + 3.0f, juego->autoZ);
+		camara->Yaw = juego->autoYaw;
+		camara->Pitch = 0.3f;
+		camara->UpdateCamera(0.0f, 0.0f, 0.0f, 0.0f);
+	}
+
+	void ActualizarJuego()
+	{
+		D3DXVECTOR3 centroBoton(37.25f, 4.5f, -116.7f);
+		D3DXMATRIX* paneles[3] = { &matrizPanel1, &matrizPanel2, &matrizPanel3 };
+		for (int i = 0; i < 3; i++)
+		{
+			D3DXVECTOR3 w;
+			D3DXVec3TransformCoord(&w, &centroBoton, paneles[i]);
+			juego->botonPos[i] = AModelo(w);
+		}
+
+		juego->Actualizar(dt, AModelo(camara->Position), DistAuto());
+		if (juego->reiniciado)
+		{
+			juego->reiniciado = false;
+			Reaparecer();
+		}
+
+		for (int i = 0; i < NUM_CASILLAS; i++)
+		{
+			D3DXVECTOR3 w = AMundo(D3DXVECTOR3(juego->casillaX[i], 0.2f, juego->casillaZ[i]));
+			fuegos[i].pos = D3DXVECTOR3(w.x, 1.18f + 2.0f * fuegos[i].tam, w.z);
+			fuegos[i].activo = juego->fuego[i];
+		}
+
+		if (!juego->enAuto && enAutoAntes)
+		{
+			camara->terceraPersona = false;
+			camara->distancia = 10.0f;
+			camara->alturaCam = 1.0f;
+		}
+		if (juego->enAuto && !enAutoAntes)
+		{
+			camara->distancia = 26.0f;
+			camara->alturaCam = 3.0f;
+		}
+		enAutoAntes = juego->enAuto;
+	}
+
+	void DibujarJuego()
+	{
+		D3DXMATRIX e, t, giro;
+
+		for (int i = 0; i < NUM_PUERTAS; i++)
+		{
+			D3DXMatrixTranslation(&t, 0.0f, -juego->puertas[i].abierta * 8.4f, 0.0f);
+			puertaModelo[i]->UpdateScene(t * matrizLab);
+			puertaModelo[i]->DrawScene(camara);
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			D3DXVECTOR3 c = juego->carpetas[i];
+			if (i == 0) D3DXMatrixScaling(&e, 1.8f, 2.4f, 0.2f);
+			else D3DXMatrixScaling(&e, 0.2f, 2.4f, 1.8f);
+			D3DXMatrixTranslation(&t, c.x, c.y, c.z);
+			carpetaCubo->UpdateScene(e * t * matrizLab);
+			carpetaCubo->DrawScene(camara);
+		}
+
+		for (int i = 0; i < 3; i++)
+		{
+			float tam = 1.2f;
+			if (juego->capsulaEncendida) tam *= 1.0f + 0.3f * sin(rotPerFrame * 0.3f);
+			D3DXMatrixScaling(&e, tam, tam, tam);
+			D3DXMatrixTranslation(&t, 16.2f, 7.6f, -116.26f - 9.0f * i);
+			lamparaCubo[juego->ordenCapsulas[i]]->UpdateScene(e * t * matrizLab);
+			lamparaCubo[juego->ordenCapsulas[i]]->DrawScene(camara);
+		}
+
+		for (int i = 0; i < NUM_CAJAS; i++)
+		{
+			D3DXMatrixScaling(&e, 4.0f, 4.0f, 4.0f);
+			D3DXMatrixTranslation(&t, juego->cajas[i].x, juego->cajas[i].y, juego->cajas[i].z);
+			cajaCubo->UpdateScene(e * t * matrizLab);
+			cajaCubo->DrawScene(camara);
+		}
+
+		D3DXVECTOR3 cm = juego->cajas[juego->cajaMonstruo];
+		if (juego->estado == EstadoEscondite && juego->monstruo == 0)
+		{
+			D3DXVECTOR3 pm = AModelo(camara->Position);
+			if (juego->Dist2D(pm, cm) < 14.0f)
+			{
+				D3DXVECTOR3 w = AMundo(D3DXVECTOR3(cm.x + 3.4f, 3.2f, cm.z));
+				D3DXMatrixTranslation(&t, w.x, w.y, w.z);
+				ojosMonstruo->UpdateScene(t);
+				ojosMonstruo->DrawScene(camara);
+			}
+		}
+		if (juego->monstruo == 2)
+		{
+			D3DXVECTOR3 w = AMundo(D3DXVECTOR3(cm.x + 4.5f, 4.2f, cm.z));
+			D3DXMatrixTranslation(&t, w.x, w.y, w.z);
+			monstruoFeliz->UpdateScene(t);
+			monstruoFeliz->DrawScene(camara);
+		}
+
+		D3DXVECTOR3 wm = AMundo(D3DXVECTOR3(111.7f, 5.4f, -54.0f));
+		D3DXMatrixTranslation(&t, wm.x, wm.y, wm.z);
+		magoBillboard->UpdateScene(t);
+		magoBillboard->DrawScene(camara);
+
+		float ay = AlturaTerreno(juego->autoX, juego->autoZ);
+		D3DXMATRIX mundoAuto;
+		D3DXMatrixRotationY(&giro, juego->autoYaw);
+		D3DXMatrixTranslation(&mundoAuto, juego->autoX, ay, juego->autoZ);
+		D3DXMatrixScaling(&e, 6.0f, 2.4f, 12.0f);
+		D3DXMatrixTranslation(&t, 0.0f, 2.4f, 0.0f);
+		autoCuerpo->UpdateScene(e * t * giro * mundoAuto);
+		autoCuerpo->DrawScene(camara);
+		D3DXMatrixScaling(&e, 5.0f, 2.0f, 6.0f);
+		D3DXMatrixTranslation(&t, 0.0f, 4.6f, -1.0f);
+		autoCabina->UpdateScene(e * t * giro * mundoAuto);
+		autoCabina->DrawScene(camara);
+		for (int i = 0; i < 4; i++)
+		{
+			D3DXMatrixScaling(&e, 1.2f, 2.4f, 2.4f);
+			D3DXMatrixTranslation(&t, (i % 2 == 0) ? -3.2f : 3.2f, 1.2f, (i < 2) ? 4.0f : -4.0f);
+			autoRueda->UpdateScene(e * t * giro * mundoAuto);
+			autoRueda->DrawScene(camara);
+		}
+	}
+
+	void DibujarPantallas()
+	{
+		if (juego->estado == EstadoPerder) hudMuerte[juego->causa]->DrawBitmap(camara, 0.0f, 0.0f, 2.0f, 2.0f);
+		else if (juego->estado == EstadoGanar) hudGanar->DrawBitmap(camara, 0.0f, 0.0f, 2.0f, 2.0f);
+		else if (juego->estado == EstadoEscondite && juego->monstruo == 1)
+		{
+			float g = 2.0f + 0.5f * juego->tJumpscare;
+			hudJumpscare->DrawBitmap(camara, 0.0f, 0.0f, g, g);
+		}
+		else if (juego->hudCarpeta) hudBrief[juego->carpetaMostrada]->DrawBitmap(camara, 0.0f, 0.0f, 1.7f, 1.45f);
+	}
+
+	bool FuegoEnRango()
+	{
+		for (int i = 0; i < numFuegos; i++)
+		{
+			if (!fuegos[i].activo) continue;
+			D3DXVECTOR3 dif = camara->Position - fuegos[i].pos;
+			dif.y = 0;
+			if (D3DXVec3Length(&dif) < 10.0f) return true;
+		}
+		return false;
+	}
+
+	void DibujarHUD()
+	{
+		hudHoras[juego->Hora()]->DrawBitmap(camara, 0.78f, 0.86f, 0.40f, 0.25f);
+
+		if (juego->estado == EstadoCapsula)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				MPrimitives* r = (i < juego->numPulsados) ? hudColor[juego->pulsados[i]] : hudRanura;
+				r->DrawBitmap(camara, -0.15f + 0.15f * i, 0.85f, 0.10f, 0.13f);
+			}
+			if (juego->numPulsados > 0)
+			{
+				float f = 1.0f - juego->tPulsado[0] / TIEMPO_BOTON;
+				hudColor[2]->DrawBitmap(camara, -0.25f + 0.25f * f, 0.73f, 0.50f * f, 0.03f);
+			}
+			if (juego->tFalloCapsula > 0.0f) hudColor[0]->DrawBitmap(camara, 0.0f, 0.69f, 0.50f, 0.03f);
+		}
+
+		if (juego->estado == EstadoEscondite && juego->monstruo == 0)
+		{
+			float f = juego->tEscondite / TIEMPO_ESCONDITE;
+			MPrimitives* b = (f > 0.25f) ? hudColor[1] : hudColor[0];
+			b->DrawBitmap(camara, -0.30f + 0.30f * f, 0.85f, 0.60f * f, 0.04f);
+		}
+
+		if (juego->estado == EstadoMago)
+		{
+			float f = (float)juego->encendidas / (float)juego->totalCasillas;
+			hudColor[0]->DrawBitmap(camara, -0.30f + 0.30f * f, -0.92f, 0.60f * f, 0.04f);
+		}
+
+		if (juego->promptE && juego->estado != EstadoPerder && juego->estado != EstadoGanar)
+			hudTeclaE->DrawBitmap(camara, 0.0f, -0.55f, 0.12f, 0.16f);
+
+		if (juego->estado == EstadoMago && itemEnMano == CUBETA && FuegoEnRango())
+			hudTeclaF->DrawBitmap(camara, 0.0f, -0.35f, 0.12f, 0.16f);
+	}
+
 	bool InitDirectInput(HINSTANCE hInstance, HWND hwnd)
 	{
 		DirectInput8Create(hInstance,
@@ -427,11 +844,12 @@ public:
 
 		// RECOGER ITEMS con E
 		bool teclaE = (keyboardState[DIK_E] & 0x80) != 0;
-		if (teclaE && !teclaEAntes && itemCercano >= 0)
+		if (teclaE && !teclaEAntes && itemCercano >= 0 && juego->estado < EstadoGanar)
 		{
 			items[itemCercano].recogido = true;
 			itemEnMano = itemCercano;
 		}
+		else if (teclaE && !teclaEAntes) AccionE();
 		teclaEAntes = teclaE;
 		bool teclaF = (keyboardState[DIK_F] & 0x80) != 0;
 		if (teclaF && !teclaFAntes && itemEnMano == CUBETA)
@@ -446,7 +864,11 @@ public:
 				float d = D3DXVec3Length(&dif);
 				if (d < distMin) { distMin = d; cercano = i; }
 			}
-			if (cercano >= 0) fuegos[cercano].activo = false;
+			if (cercano >= 0)
+			{
+				fuegos[cercano].activo = false;
+				juego->ApagarFuego(cercano);
+			}
 		}
 		teclaFAntes = teclaF;
 
@@ -508,7 +930,24 @@ public:
 			mouseLastState = mouseCurrState;
 		}
 
-		camara->UpdateCamera(moveBackForward, moveLeftRight, camYaw, camPitch);
+		if (juego->hudCarpeta || juego->estado == EstadoPerder || juego->estado == EstadoGanar || (juego->estado == EstadoEscondite && juego->monstruo == 1))
+		{
+			moveLeftRight = 0;
+			moveBackForward = 0;
+			camYaw = 0;
+			camPitch = 0;
+		}
+
+		if (juego->enAuto)
+		{
+			ConducirAuto(keyboardState);
+		}
+		else
+		{
+			D3DXVECTOR3 antes = camara->Position;
+			camara->UpdateCamera(moveBackForward, moveLeftRight, camYaw, camPitch);
+			ColisionJugador(antes);
+		}
 		skyCamara->setSkyCamara(camara);
 	}
 
@@ -542,7 +981,7 @@ public:
 
 		//Shader calor
 		light.fuegoPos = D3DXVECTOR4(0, 0, 0, 0);
-		light.efectos = D3DXVECTOR4(0, 1, 0, 0);
+		light.efectos = D3DXVECTOR4(0, 1, 0, DENSIDAD_NIEBLA);
 		inicioJuego = GetTickCount();
 
 		//Set the Viewport
@@ -564,7 +1003,7 @@ public:
 
 
 		// RECOGER ITEMS
-		items[CUBETA] = CrearItem(new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 0.8f, 1.5f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderItem), L"Texturas/Health.png", D3DXVECTOR3(157.5f, 2.2f, 100.0f), 1.0f);
+		items[CUBETA] = CrearItem(new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 0.8f, 1.5f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderItem), L"Texturas/Health.png", D3DXVECTOR3(157.5f, 2.2f, 205.25f), 1.0f);
 		numItems = 1;
 		itemCercano = -1;
 		itemEnMano = -1;
@@ -578,6 +1017,8 @@ public:
 		escalaPersonaje = 3.4f;
 		pisoPersonaje = 1.2f;
 		giroPersonaje = 180.0f;
+
+		InitJuego();
 
 		return true;
 	}
@@ -594,7 +1035,7 @@ public:
 			if (fuegos[i].activo) { centro += fuegos[i].pos; activos++; }
 		}
 		if (activos > 0) centro /= (float)activos;
-		light.fuegoPos = D3DXVECTOR4(centro.x, centro.y, centro.z, numFuegos > 0 ? (float)activos / numFuegos : 0.0f);
+		light.fuegoPos = D3DXVECTOR4(centro.x, centro.y, centro.z, numFuegos > 0 ? ((float)activos > 12.0f ? 1.0f : (float)activos / 12.0f) : 0.0f);
 
 		LastBoundingPosition = BoundingSphereTranslation;
 		BoundingSphereTranslation += DummyBoundyEvents;
@@ -886,6 +1327,15 @@ public:
 			iconoTomar->UpdateScene(matIcono);
 		}
 
+		//Juego
+		LARGE_INTEGER ahora;
+		QueryPerformanceCounter(&ahora);
+		dt = (float)(ahora.QuadPart - tickAntes.QuadPart) / (float)frecuencia.QuadPart;
+		tickAntes = ahora;
+		if (dt > 0.1f) dt = 0.1f;
+		matrizLab = matrizLaboratorio;
+		D3DXMatrixInverse(&matrizLabInv, NULL, &matrizLab);
+		ActualizarJuego();
 	}
 
 	void DrawScene()
@@ -943,7 +1393,6 @@ public:
 		techoTierra->DrawScene(camara);
 		techoOrillaMarco->DrawScene(camara);
 		techoOrillaPB->DrawScene(camara);
-		puertasPuerta->DrawScene(camara);
 		puertasMarco->DrawScene(camara);
 		puertasPB->DrawScene(camara);
 		marcosVentanas->DrawScene(camara);
@@ -1022,8 +1471,12 @@ public:
 
 
 
+		DibujarJuego();
+
 		terreno->DrawScene(camara);
+		light.efectos.w = 0.0f;
 		skydomo->DrawScene(skyCamara);
+		light.efectos.w = DENSIDAD_NIEBLA;
 
 		//para shader item
 		light.efectos.z = 1.0f;
@@ -1053,7 +1506,7 @@ public:
 			items[itemEnMano].modelo->DrawScene(camara);
 		}
 		//3era persona
-		if (camara->terceraPersona)
+		if (camara->terceraPersona && !juego->enAuto)
 		{
 			D3DXMATRIX escP, rotP, trasP, matP;
 			D3DXMatrixScaling(&escP, escalaPersonaje, escalaPersonaje, escalaPersonaje);
@@ -1080,9 +1533,12 @@ public:
 			fuego[cuadro]->DrawScene(camara);
 		}
 
+		DibujarPantallas();
+
 		// gui, camra posx popsy ancho alto
 		hudVida->DrawBitmap(camara, -0.90f, 0.85f, 0.30f, 0.30f);  // arriba a la izquierda
 		hudMapa->DrawBitmap(camara, 0.80f, -0.70f, 0.30f, 0.30f);  // abajo a la derecha
+		DibujarHUD();
 
 		// RECOGER ITEMS pero el hud
 		float x = -0.85f;
