@@ -88,6 +88,8 @@ private:
 	LARGE_INTEGER frecuencia;
 	LARGE_INTEGER tickAntes;
 	float dt;
+
+	int monstruoAntes;//para el sonido del jusmpcare
 	bool enAutoAntes;
 	float alturas[256 * 256];
 	MPrimitives* puertaModelo[NUM_PUERTAS];
@@ -210,6 +212,7 @@ public:
 		rotPerFrame = 0.0f;
 		juego = NULL;
 		dt = 0.0f;
+		monstruoAntes = 0;
 		enAutoAntes = false;
 		D3DXMatrixIdentity(&matrizLab);
 		D3DXMatrixIdentity(&matrizLabInv);
@@ -481,6 +484,19 @@ public:
 		}
 
 		ColocarAuto();
+
+		MCIERROR err = mciSendString(L"open \"Audio/ambiente.mp3\" type mpegvideo alias musica", NULL, 0, NULL);
+		if (err)
+		{
+			wchar_t msg[128];
+			mciGetErrorString(err, msg, 128);
+			MessageBox(0, msg, L"Audio", MB_OK);
+		}
+		mciSendString(L"setaudio musica volume to 350", NULL, 0, NULL);
+		mciSendString(L"play musica repeat", NULL, 0, NULL);
+
+		mciSendString(L"open \"Audio/jumpscare.mp3\" type mpegvideo alias susto", NULL, 0, NULL);
+		mciSendString(L"setaudio susto volume to 1000", NULL, 0, NULL);
 	}
 
 	void CargarAlturas(const char* archivo)
@@ -629,6 +645,12 @@ public:
 		}
 
 		juego->Actualizar(dt, AModelo(camara->Position), DistAuto());
+		if (juego->estado == EstadoEscondite && juego->monstruo == 1 && monstruoAntes != 1)
+		{
+			mciSendString(L"seek susto to start", NULL, 0, NULL);
+			mciSendString(L"play susto", NULL, 0, NULL);
+		}
+		monstruoAntes = juego->monstruo;
 		if (juego->reiniciado)
 		{
 			juego->reiniciado = false;
@@ -747,7 +769,7 @@ public:
 		else if (juego->estado == EstadoGanar) hudGanar->DrawBitmap(camara, 0.0f, 0.0f, 2.0f, 2.0f);
 		else if (juego->estado == EstadoEscondite && juego->monstruo == 1)
 		{
-			float g = 2.0f + 0.5f * juego->tJumpscare;
+			float g = 2.0f + 1.5f * juego->tJumpscare;
 			hudJumpscare->DrawBitmap(camara, 0.0f, 0.0f, g, g);
 		}
 		else if (juego->hudCarpeta) hudBrief[juego->carpetaMostrada]->DrawBitmap(camara, 0.0f, 0.0f, 1.7f, 1.45f);
@@ -953,6 +975,12 @@ public:
 
 	void ReleaseObjects()
 	{
+		//quitar musica
+		mciSendString(L"stop musica", NULL, 0, NULL);
+		mciSendString(L"close musica", NULL, 0, NULL);
+		mciSendString(L"stop susto", NULL, 0, NULL);
+		mciSendString(L"close susto", NULL, 0, NULL);
+
 		//Release the COM Objects we created
 		SwapChain->Release();
 		d3d11Device->Release();
@@ -1003,7 +1031,7 @@ public:
 
 
 		// RECOGER ITEMS
-		items[CUBETA] = CrearItem(new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 0.8f, 1.5f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderItem), L"Texturas/Health.png", D3DXVECTOR3(157.5f, 2.2f, 205.25f), 1.0f);
+		items[CUBETA] = CrearItem(new MPrimitives(d3d11Device, d3d11DevCon, 16, 1.0f, 0.8f, 1.5f, L"Texturas/escudo.jpg", L"Texturas/escudoNormal.jpg", ShaderItem), L"Texturas/cubeta.png", D3DXVECTOR3(157.5f, 2.2f, 205.25f), 1.0f);
 		numItems = 1;
 		itemCercano = -1;
 		itemEnMano = -1;
