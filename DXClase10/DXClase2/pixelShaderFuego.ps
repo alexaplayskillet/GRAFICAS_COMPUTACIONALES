@@ -17,6 +17,14 @@ struct VS_OUTPUT
 {
 	float4 Pos : SV_POSITION;
 	float2 TexCoord : TEXTURE;
+	float3 normal : NORMAL;
+	float3 viewDirection : COORDS;
+	float3 tangent : TANGENT;
+	float3 binormal : BINORMAL;
+	float4 vectPos : POSITION;
+	float maxHeight : HEIGHT;
+	float3 worldPos : WORLDPOS;
+	float distCam : DISTCAM;
 };
 
 Texture2D ObjTexture;
@@ -33,5 +41,9 @@ float4 PS(VS_OUTPUT input) : SV_Target
 	clip(c.a - 0.9f);
 
 	float brillo = 1.1 + 0.25 * sin(t * 17.0) * sin(t * 5.0);
-	return float4(c.rgb * brillo, 1);
+	float3 resultado = c.rgb * brillo;
+	float niebla = saturate(1.0 - exp(-input.distCam * light.efectos.w));
+	resultado = lerp(resultado, float3(0.30, 0.32, 0.38), niebla);
+
+	return float4(resultado, 1);
 }

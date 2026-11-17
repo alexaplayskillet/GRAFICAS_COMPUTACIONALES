@@ -89,6 +89,8 @@
     <ClInclude Include="DXRender.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="MeshPrimitives.h" />
+    <ClInclude Include="Juego.h" />
+    <ClInclude Include="MapaColision.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="pixelShader.ps" />
